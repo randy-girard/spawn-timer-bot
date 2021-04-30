@@ -285,12 +285,34 @@ BOT.command(:register) do |event, *args|
     event << "```"
   else
     mob, window, variance = args.join(" ").split("|")
-    window_start, window_end = window.split(",")
+    window_start, window_end = window.split(",") if window
 
     mob.strip!
     variance.strip! if variance
     window_start.strip! if window_start
     window_end.strip! if window_end
+
+    special = "@!?<>',?[]}{=)(*&^%$#`~{}"
+    regex = /[#{special.gsub(/./){|char| "\\#{char}"}}]/
+    if mob && mob.to_s.downcase =~ regex
+      event.respond "Mob name [#{mob}] has invalid characters."
+      return
+    end
+
+    if window_start && window_start.count("^0-9").zero?
+      event.respond "Window Start/Spawn time [#{window_start}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      return
+    end
+
+    if window_end && window_end.count("^0-9").zero?
+      event.respond "Window End [#{window_end}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      return
+    end
+
+    if variance && variance.count("^0-9").zero?
+      event.respond "Variance [#{variance}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      return
+    end
 
     timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
     timer ||= Timer.new
@@ -343,8 +365,8 @@ BOT.command(:show) do |event, *args|
 
   if timers.size > 1 && !found_timer
     event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
-  elsif found_timer
-    show_message(event, found_timer)
+  elsif found_timer || timers.size == 1
+    show_message(event, found_timer || timers[0])
   else
     event.respond "No timer registered for **#{mob}**."
   end
