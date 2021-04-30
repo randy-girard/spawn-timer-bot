@@ -123,6 +123,7 @@ end
 def build_timer_message
   any_in_window = false
   any_need_tod = false
+  any_mobs = false
   message = []
 
   upcoming_message = []
@@ -165,6 +166,7 @@ def build_timer_message
         end
         in_window_message << ""
       else
+        any_mobs = true
         upcoming_message << "**#{timer.name}**"
         if window_end.to_s.length == 0
           upcoming_message << "• Spawns #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
@@ -182,9 +184,11 @@ def build_timer_message
     end
   end
 
-  message << "\:dragon: __**Mobs**__ \:dragon:"
-  message << ""
-  message << upcoming_message
+  if any_mobs
+    message << "\:dragon: __**Mobs**__ \:dragon:"
+    message << ""
+    message << upcoming_message
+  end
 
   if any_in_window
     message << ""
