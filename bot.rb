@@ -3,6 +3,7 @@ require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 
 Bundler.require
 
+ENV['TZ'] = 'EST'
 ENV["RACK_ENV"] ||= "development"
 
 Dotenv.load(".env.local", ".env.#{ENV["RACK_ENV"]}", ".env")
@@ -29,6 +30,7 @@ DB = Sequel.connect(DATABASE_URL)
 
 Sequel.extension :migration
 Sequel::Migrator.run(DB, 'db/migrate', :use_transactions=>true)
+Sequel.default_timezone = :etc
 
 class Timer < Sequel::Model
 end
