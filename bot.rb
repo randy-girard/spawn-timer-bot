@@ -3,7 +3,7 @@ require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 
 Bundler.require
 
-ENV['TZ'] = 'EST'
+ENV['TZ'] ||= 'EDT'
 ENV["RACK_ENV"] ||= "development"
 
 Dotenv.load(".env.local", ".env.#{ENV["RACK_ENV"]}", ".env")
@@ -169,13 +169,13 @@ def build_timer_message
         any_mobs = true
         upcoming_message << "**#{timer.name}**"
         if window_end.to_s.length == 0
-          if Time.now.utc >= starts_at - (4 * 60 * 60)
+          if Time.now >= starts_at - (4 * 60 * 60)
             upcoming_message << "• Spawns in #{window_start}"
           else
             upcoming_message << "• Spawns #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
           end
         else
-          if Time.now.utc >= starts_at - (4 * 60 * 60)
+          if Time.now >= starts_at - (4 * 60 * 60)
             upcoming_message << "• Starts in #{window_start}"
             upcoming_message << "• Ends in #{window_end}"
           else
