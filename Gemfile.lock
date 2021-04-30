@@ -55,7 +55,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.6)
-    websocket (1.2.4)
+    websocket (1.2.9)
     websocket-client-simple (0.3.0)
       event_emitter
       websocket
