@@ -39,7 +39,6 @@ end
   :timer_alert => { last: nil, refresh: TIMER_ALERT_CHANNEL_REFRESH_RATE }
 }
 
-#bot = Discordrb::Bot.new token:, client_id: 837418312778252298
 BOT = Discordrb::Commands::CommandBot.new token: TOKEN,
                                           client_id: CLIENT_ID,
                                           prefix: '!'
