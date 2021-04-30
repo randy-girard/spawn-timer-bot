@@ -169,12 +169,18 @@ def build_timer_message
         any_mobs = true
         upcoming_message << "**#{timer.name}**"
         if window_end.to_s.length == 0
-          upcoming_message << "• Spawns #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
-          upcoming_message << "• Spawns in #{window_start}"
+          if start_at.to_date == Date.today
+            upcoming_message << "• Spawns in #{window_start}"
+          else
+            upcoming_message << "• Spawns #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
+          end
         else
-          upcoming_message << "• Starts at #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
-          upcoming_message << "• Starts in #{window_start}"
-          upcoming_message << "• Ends in #{window_end}"
+          if start_at.to_date == Date.today
+            upcoming_message << "• Starts in #{window_start}"
+            upcoming_message << "• Ends in #{window_end}"
+          else
+            upcoming_message << "• Starts at #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
+          end
         end
         upcoming_message << ""
       end
