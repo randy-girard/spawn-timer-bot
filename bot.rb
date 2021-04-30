@@ -259,13 +259,14 @@ BOT.command(:help) do |event|
   event << ""
   event << "List of available commands:"
   event << "```"
-  event << "!register  - Register a new timer that you want to start tracking."
-  event << "!show      - Displays configuration about a timer."
-  event << "!rename    - Renames an existing timer."
-  event << "!tod       - Record a time of death for a registered timer."
-  event << "!todremove - Remove a time of death for a registered timer."
-  event << "!timers    - See the list of timers that have been registered."
-  event << "!remove    - Remove a timer."
+  event << "!register   - Register a new timer that you want to start tracking."
+  event << "!show       - Displays configuration about a timer."
+  event << "!rename     - Renames an existing timer."
+  event << "!tod        - Record a time of death for a registered timer."
+  event << "!todremove  - Remove a time of death for a registered timer."
+  event << "!timers     - See the list of timers that have been registered."
+  event << "!earthquake - Resets the TOD for all timers. Warning!!! Know what you are doing."
+  event << "!remove     - Remove a timer."
   event << "```"
 end
 
@@ -428,6 +429,17 @@ BOT.command(:rename) do |event, *args|
   else
     event.respond "No timer registered for **#{mob}**."
   end
+end
+
+BOT.command(:earthquake) do |event|
+  Timer.all.each do |timer|
+    timer.last_tod = nil
+    timer.alerted = false
+    timer.save
+  end
+  update_timers_channel
+  event.respond "Earthquake has been registered!"
+  BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**EARTHQUAKE**")
 end
 
 BOT.command(:tod) do |event, *args|
