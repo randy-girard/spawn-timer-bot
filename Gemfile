@@ -13,6 +13,9 @@ gem 'discordrb'
 gem 'chronic'
 gem 'chronic_duration'
 gem 'dotiw'
-gem 'sqlite3'
 gem 'pg'
 gem 'sequel'
+
+group :development, :test do
+  gem 'sqlite3'
+end
