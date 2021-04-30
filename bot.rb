@@ -425,7 +425,7 @@ BOT.command(:tod) do |event, *args|
   mob.strip!
   manual_tod.strip! if manual_tod
 
-  tod = if manual_tod.length > 0
+  tod = if manual_tod.to_s.length > 0
           Chronic.parse(manual_tod, :context => :past)
         else
           Time.now
