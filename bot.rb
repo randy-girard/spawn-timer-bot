@@ -339,11 +339,12 @@ BOT.command(:show) do |event, *args|
   mob.strip!
 
   timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%")).all
-  if timers.size > 1
+  found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
+
+  if timers.size > 1 && !found_timer
     event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
-  elsif timers.size == 1
-    timer = timers
-    show_message(event, timer)
+  elsif found_timer
+    show_message(event, found_timer)
   else
     event.respond "No timer registered for **#{mob}**."
   end
