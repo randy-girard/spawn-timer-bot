@@ -338,7 +338,7 @@ BOT.command(:show) do |event, *args|
   mob = args.join(" ")
   mob.strip!
 
-  timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%"))
+  timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%")).all
   if timers.size > 1
     event.respond "Request turned multiple results: `#{timers.map(&:name).join(", ")}`. Please be more specific."
   elsif timers.size == 1
