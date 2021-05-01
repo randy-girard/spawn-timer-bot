@@ -3,6 +3,8 @@ require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 
 Bundler.require
 
+require 'date'
+
 ENV['TZ'] ||= 'EDT'
 ENV["RACK_ENV"] ||= "development"
 
