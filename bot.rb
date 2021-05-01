@@ -496,7 +496,7 @@ BOT.command(:tod) do |event, *args|
     timer.alerted = nil
     timer.save
     update_timers_channel
-    event.respond "Time of death for **#{mob}** recorded as #{tod.strftime("%A, %B %d at %I:%M:%S %p EST")}!"
+    event.respond "Time of death for **#{mob}** recorded as #{tod.strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
   else
     event.respond "No timer registered for **#{mob}**."
   end
