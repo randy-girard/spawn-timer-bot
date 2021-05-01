@@ -60,11 +60,11 @@ def in_window(mob)
 end
 
 
-def next_spawn_time_start(mob)
+def next_spawn_time_start(mob, last_tod = nil)
   timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
 
-  if timer.last_tod
-    tod = Time.at(timer.last_tod)
+  if last_tod || timer.last_tod
+    tod = Time.at(last_tod || timer.last_tod)
 
     if timer.variance
       tod + ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
@@ -73,6 +73,17 @@ def next_spawn_time_start(mob)
     end
   else
     false
+  end
+end
+
+
+def last_spawn_time_start(mob)
+  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
+
+  if timer.variance
+    Time.now - ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
+  else
+    Time.now - ChronicDuration.parse(timer.window_start)
   end
 end
 
@@ -106,6 +117,13 @@ def past_possible_spawn_time(mob)
   else
     false
   end
+end
+
+def find_timer_by_mob(mob)
+  timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%")).all
+  found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
+
+  return timers, found_timer
 end
 
 def display_time_ago(time)
@@ -373,8 +391,7 @@ BOT.command(:show) do |event, *args|
   mob = args.join(" ")
   mob.strip!
 
-  timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%")).all
-  found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
+  timers, found_timer = find_timer_by_mob(mob)
 
   if timers.size > 1 && !found_timer
     event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
@@ -403,12 +420,16 @@ BOT.command(:todremove) do |event, *args|
   mob = args.join(" ")
   mob.strip!
 
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
-  if timer
+  timers, found_timer = find_timer_by_mob(mob)
+
+  if timers.size > 1 && !found_timer
+    event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+  elsif found_timer || timers.size == 1
+    timer = found_timer || timers[0]
     timer.last_tod = nil
     timer.save
     update_timers_channel
-    event.respond "Time of death removed for **#{mob}**!"
+    event.respond "Time of death removed for **#{timer.name}**!"
   else
     event.respond "No timer registered for **#{mob}**."
   end
@@ -471,15 +492,16 @@ BOT.command(:tod) do |event, *args|
     return
   end
 
-  mob, manual_tod = args.join(" ").split("|")
+  mob, manual_tod = args.join(" ").split(/[\|\,]/)
   mob.strip!
   manual_tod.strip! if manual_tod
 
   tod = if manual_tod.to_s.length > 0
           begin
+            Time.zone = 'Eastern Time (US & Canada)'
+            Chronic.parse(manual_tod, :context => :past, :time_class => Time.zone)
+          rescue => ex
             DateTime.parse(manual_tod)
-          rescue
-            Chronic.parse(manual_tod, :context => :past)
           end
         else
           Time.now
@@ -490,13 +512,24 @@ BOT.command(:tod) do |event, *args|
     return
   end
 
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
-  if timer
-    timer.last_tod = tod.to_f
-    timer.alerted = nil
-    timer.save
-    update_timers_channel
-    event.respond "Time of death for **#{mob}** recorded as #{tod.strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+  timers, found_timer = find_timer_by_mob(mob)
+
+  if timers.size > 1 && !found_timer
+    event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+  elsif found_timer || timers.size == 1
+    timer = found_timer || timers[0]
+
+    last_spawn = last_spawn_time_start(mob)
+
+    if manual_tod && tod < last_spawn
+      event.respond "Time of death is older than potential spawn timer. Please try again."
+    else
+      timer.last_tod = tod.to_f
+      timer.alerted = nil
+      timer.save
+      update_timers_channel
+      event.respond "Time of death for **#{timer.name}** recorded as #{tod.strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+    end
   else
     event.respond "No timer registered for **#{mob}**."
   end
