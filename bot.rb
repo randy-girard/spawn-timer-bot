@@ -174,14 +174,14 @@ def build_timer_message
           if Time.now >= starts_at - (4 * 60 * 60)
             upcoming_message << "• Spawns in #{window_start}"
           else
-            upcoming_message << "• Spawns #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
+            upcoming_message << "• Spawns #{starts_at.in_time_zone("EST").strftime("%A, %B %d at %I:%M:%S %p %Z")}"
           end
         else
           if Time.now >= starts_at - (4 * 60 * 60)
             upcoming_message << "• Starts in #{window_start}"
             upcoming_message << "• Ends in #{window_end}"
           else
-            upcoming_message << "• Starts at #{starts_at.strftime("%A, %B %d at %I:%M:%S %p EST")}"
+            upcoming_message << "• Starts at #{starts_at.in_time_zone("EST").strftime("%A, %B %d at %I:%M:%S %p %Z")}"
           end
         end
         upcoming_message << ""
