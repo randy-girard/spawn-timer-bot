@@ -49,11 +49,16 @@ sleep 2
 
 
 def in_window(mob)
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
-  next_spawn = next_spawn_time_start(mob)
+  timers, timer = find_timer_by_mob(mob)
 
-  if next_spawn
-    Time.now > next_spawn
+  if timer
+    next_spawn = next_spawn_time_start(mob)
+
+    if next_spawn
+      Time.now > next_spawn
+    else
+      false
+    end
   else
     false
   end
@@ -61,9 +66,9 @@ end
 
 
 def next_spawn_time_start(mob, last_tod = nil)
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
+  timers, timer = find_timer_by_mob(mob)
 
-  if last_tod || timer.last_tod
+  if timer && (last_tod || timer.last_tod)
     tod = Time.at(last_tod || timer.last_tod)
 
     if timer.variance
@@ -78,9 +83,9 @@ end
 
 
 def last_spawn_time_start(mob)
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
+  timers, timer = find_timer_by_mob(mob)
 
-  if timer.variance
+  if timer && timer.variance
     Time.now - ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
   else
     Time.now - ChronicDuration.parse(timer.window_start)
@@ -89,9 +94,9 @@ end
 
 
 def next_spawn_time_end(mob)
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
+  timers, timer = find_timer_by_mob(mob)
 
-  if timer.last_tod
+  if timer && timer.last_tod
     tod = Time.at(timer.last_tod)
 
     if timer.window_end && timer.variance
@@ -449,7 +454,7 @@ BOT.command(:rename) do |event, *args|
     return
   end
 
-  mob, new_mob = args.join(" ").split("|")
+  mob, new_mob = args.join(" ").split(/[\|\,]/)
   mob.strip!
   new_mob.strip!
 
