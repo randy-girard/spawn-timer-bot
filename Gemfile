@@ -15,6 +15,7 @@ gem 'chronic_duration'
 gem 'dotiw'
 gem 'pg'
 gem 'sequel'
+gem 'activesupport'
 
 group :development, :test do
   gem 'sqlite3'

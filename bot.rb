@@ -4,8 +4,9 @@ require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 Bundler.require
 
 require 'date'
+require 'active_support/time'
 
-ENV['TZ'] ||= 'EDT'
+ENV['TZ'] ||= 'EST'
 ENV["RACK_ENV"] ||= "development"
 
 Dotenv.load(".env.local", ".env.#{ENV["RACK_ENV"]}", ".env")
@@ -49,7 +50,8 @@ sleep 2
 
 
 def in_window(mob)
-  timers, timer = find_timer_by_mob(mob)
+  timers, found_timer = find_timer_by_mob(mob)
+  timer = found_timer || timers[0]
 
   if timer
     next_spawn = next_spawn_time_start(mob)
@@ -66,7 +68,8 @@ end
 
 
 def next_spawn_time_start(mob, last_tod = nil)
-  timers, timer = find_timer_by_mob(mob)
+  timers, found_timer = find_timer_by_mob(mob)
+  timer = found_timer || timers[0]
 
   if timer && (last_tod || timer.last_tod)
     tod = Time.at(last_tod || timer.last_tod)
@@ -83,12 +86,15 @@ end
 
 
 def last_spawn_time_start(mob)
-  timers, timer = find_timer_by_mob(mob)
+  timers, found_timer = find_timer_by_mob(mob)
+  timer = found_timer || timers[0]
 
-  if timer && timer.variance
-    Time.now - ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
-  else
-    Time.now - ChronicDuration.parse(timer.window_start)
+  if timer
+    if timer.variance
+      Time.now - ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
+    else
+      Time.now - ChronicDuration.parse(timer.window_start)
+    end
   end
 end
 
@@ -503,8 +509,7 @@ BOT.command(:tod) do |event, *args|
 
   tod = if manual_tod.to_s.length > 0
           begin
-            Time.zone = 'Eastern Time (US & Canada)'
-            Chronic.parse(manual_tod, :context => :past, :time_class => Time.zone)
+            Chronic.parse(manual_tod, :context => :past)
           rescue => ex
             DateTime.parse(manual_tod)
           end
@@ -526,7 +531,7 @@ BOT.command(:tod) do |event, *args|
 
     last_spawn = last_spawn_time_start(mob)
 
-    if manual_tod && tod < last_spawn
+    if last_spawn && manual_tod && tod < last_spawn
       event.respond "Time of death is older than potential spawn timer. Please try again."
     else
       timer.last_tod = tod.to_f
