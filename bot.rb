@@ -131,7 +131,7 @@ def past_possible_spawn_time(mob)
 end
 
 def find_timer_by_mob(mob)
-  timers = Timer.where(Sequel.ilike(:name, "#{mob.to_s}%")).all
+  timers = Timer.where(Sequel.ilike(:name, "%#{mob.to_s}%")).all
   found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
 
   return timers, found_timer
