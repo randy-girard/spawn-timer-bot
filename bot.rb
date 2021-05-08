@@ -6,7 +6,7 @@ Bundler.require
 require 'date'
 require 'active_support/time'
 
-ENV['TZ'] ||= 'EST'
+ENV['TZ'] ||= 'Eastern Time (US & Canada)'
 ENV["RACK_ENV"] ||= "development"
 
 Dotenv.load(".env.local", ".env.#{ENV["RACK_ENV"]}", ".env")
