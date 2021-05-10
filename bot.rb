@@ -18,7 +18,7 @@ DATABASE_URL = ENV["DATABASE_URL"]
 TOKEN = ENV["TOKEN"]
 CLIENT_ID = ENV["CLIENT_ID"]
 
-COMMAND_CHANNEL = ENV["COMMAND_CHANNEL"]
+COMMAND_CHANNEL_ID = ENV["TIMER_COMMAND_CHANNEL_ID"]
 TIMER_CHANNEL_ID = ENV["TIMER_CHANNEL_ID"]
 TIMER_ALERT_CHANNEL_ID = ENV["TIMER_ALERT_CHANNEL_ID"]
 TIMER_CHANNEL_REFRESH_RATE = (ENV["TIMER_CHANNEL_REFRESH_RATE"] || 10).to_i
@@ -312,7 +312,7 @@ BOT.command(:help) do |event|
 end
 
 BOT.command(:register) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
@@ -386,7 +386,7 @@ end
 
 
 BOT.command(:show) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
@@ -415,7 +415,7 @@ end
 
 
 BOT.command(:todremove) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
@@ -447,7 +447,7 @@ BOT.command(:todremove) do |event, *args|
 end
 
 BOT.command(:rename) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
@@ -476,6 +476,8 @@ BOT.command(:rename) do |event, *args|
 end
 
 BOT.command(:earthquake) do |event|
+  return if event.channel.id != COMMAND_CHANNEL_ID
+
   Timer.all.each do |timer|
     timer.last_tod = nil
     timer.alerted = false
@@ -487,7 +489,7 @@ BOT.command(:earthquake) do |event|
 end
 
 BOT.command(:tod) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
@@ -547,7 +549,7 @@ end
 
 
 BOT.command(:timers) do |event|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   timers = Timer.all
 
@@ -559,7 +561,7 @@ BOT.command(:timers) do |event|
 end
 
 BOT.command(:remove) do |event, *args|
-  return if event.channel.name != COMMAND_CHANNEL
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
     event << "```"
