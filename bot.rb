@@ -177,6 +177,8 @@ def build_timer_message
 
       if timer.window_end || timer.variance
         window_end = display_time_distance(ends_at)
+      else
+        window_end = window_start
       end
     else
       last_tod = false
@@ -189,10 +191,10 @@ def build_timer_message
       elsif in_window(timer.name)
         any_in_window = true
         in_window_message << "**#{timer.name}**"
-        in_window_message << "• Started #{window_start} ago"
         if ends_at < Time.now
           in_window_message << "• Ended #{window_end} ago"
         else
+          in_window_message << "• Started #{window_start} ago"
           in_window_message << "• Ends In  #{window_end}"
         end
         in_window_message << ""
@@ -268,10 +270,12 @@ end
 def update_timers_channel
   message = build_timer_message
 
-  if @timers_message
-    @timers_message.edit(message.to_s)
-  else
-    @timers_message = BOT.send_message(TIMER_CHANNEL_ID, message.to_s)
+  if message.to_s.length > 0
+    if @timers_message
+      @timers_message.edit(message.to_s)
+    else
+      @timers_message = BOT.send_message(TIMER_CHANNEL_ID, message.to_s)
+    end
   end
 end
 
