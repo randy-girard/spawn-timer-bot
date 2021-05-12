@@ -166,6 +166,7 @@ def build_timer_message
     starts_at = ""
     ends_at = ""
     window_end = ""
+    no_window_end = false
     last_tod = ""
 
     if timer.last_tod
@@ -178,6 +179,7 @@ def build_timer_message
       if timer.window_end || timer.variance
         window_end = display_time_distance(ends_at)
       else
+        no_window_end = true
         window_end = window_start
       end
     else
@@ -201,7 +203,7 @@ def build_timer_message
       else
         any_mobs = true
         upcoming_message << "**#{timer.name}**"
-        if window_end.to_s.length == 0
+        if no_window_end || window_end.to_s.length == 0
           if Time.now >= starts_at - (4 * 60 * 60)
             upcoming_message << "• Spawns in #{window_start}"
           else
