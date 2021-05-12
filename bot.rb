@@ -53,7 +53,7 @@ def in_window(mob)
   timers, found_timer = find_timer_by_mob(mob)
   timer = found_timer || timers[0]
 
-  if timer
+  if timer && !past_possible_spawn_time(mob)
     next_spawn = next_spawn_time_start(mob)
 
     if next_spawn
