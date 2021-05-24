@@ -36,6 +36,24 @@ Sequel::Migrator.run(DB, 'db/migrate', :use_transactions=>true)
 
 class Timer < Sequel::Model
 end
+class Setting < Sequel::Model
+  def self.find_by_key(key)
+    s = Setting.find(key: key)
+    if s
+      s.value
+    else
+      nil
+    end
+  end
+
+  def self.save_by_key(key, value)
+    s = Setting.find(key: key) || Setting.new
+    s.key = key
+    s.value = value
+    s.save
+    s
+  end
+end
 
 @timer_updates = {
   :timer => { last: nil, refresh: TIMER_CHANNEL_REFRESH_RATE },
@@ -277,6 +295,7 @@ def update_timers_channel
       @timers_message.edit(message.to_s)
     else
       @timers_message = BOT.send_message(TIMER_CHANNEL_ID, message.to_s)
+      Setting.save_by_key("timer_message_id", @timers_message.id)
     end
   end
 end
@@ -600,8 +619,14 @@ end
 
 threads = []
 threads << Thread.new {
+
   channel = BOT.channel(TIMER_CHANNEL_ID)
-  @timers_message = channel.history(1).first
+
+  timer_message_id = Setting.find_by_key("timer_message_id")
+  if timer_message_id
+    #@timers_message = channel.history(1).first
+    @timers_message = channel.load_message(timer_message_id)
+  end
   update_timers_channel
 
   while true
