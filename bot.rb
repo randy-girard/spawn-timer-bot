@@ -262,7 +262,7 @@ def build_timer_message
     message << ""
     message << "\:warning: __**Mobs needing TOD**__ \:warning:"
     message << ""
-    message << need_tod_message.join(", ")
+    message << need_tod_message.sort.join(", ")
   end
 
   message.join("\n")
