@@ -317,7 +317,7 @@ end
 
 
 BOT.command(:help) do |event|
-  return if event.channel.name != "timer-commands"
+  return if event.channel.id != COMMAND_CHANNEL_ID
 
   event << "Spawn Timer Bot Help Menu"
   event << ""
