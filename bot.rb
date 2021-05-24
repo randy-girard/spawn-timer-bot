@@ -209,8 +209,10 @@ def build_timer_message
         any_need_tod = true
         need_tod_message << timer.name
       elsif in_window(timer.name)
+        percentage = ((Time.now - starts_at) / (ends_at - starts_at)) * 100
+
         any_in_window = true
-        in_window_message << "**#{timer.name}**"
+        in_window_message << "**#{timer.name}** (#{percentage.round(2)}%)"
         if ends_at < Time.now
           in_window_message << "• Ended #{window_end} ago"
         else
