@@ -326,13 +326,13 @@ BOT.command(:help) do |event|
   event << "List of available commands:"
   event << "```"
   event << "!register   - Register a new timer that you want to start tracking."
+  event << "!unregister - Removes a previously registered timer."
   event << "!show       - Displays configuration about a timer."
   event << "!rename     - Renames an existing timer."
   event << "!tod        - Record a time of death for a registered timer."
   event << "!todremove  - Remove a time of death for a registered timer."
   event << "!timers     - See the list of timers that have been registered."
   event << "!earthquake - Resets the TOD for all timers. Warning!!! Know what you are doing."
-  event << "!remove     - Remove a timer."
   event << "```"
 end
 
@@ -406,6 +406,38 @@ BOT.command(:register) do |event, *args|
     event.respond "Timer for **#{mob}** #{window}"
 
     show_message(event, timer)
+  end
+end
+
+
+BOT.command(:unregister) do |event, *args|
+  return if event.channel.id != COMMAND_CHANNEL_ID
+
+  if args.size == 0
+    event << "```"
+    event << "!unregister [mob name]"
+    event << ""
+    event << "Examples:"
+    event << ""
+    event << "!unregister Faydedar"
+    event << "!unregister Vox"
+    event << "!unregister Vessel"
+    event << "```"
+  else
+    mob = args.join(" ")
+    mob.strip!
+
+    timers, found_timer = find_timer_by_mob(mob)
+
+    if timers.size > 1 && !found_timer
+      event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    elsif found_timer || timers.size == 1
+      found_timer.delete
+      update_timers_channel
+      event.respond "Registered timer for [#{found_timer.name}] removed."
+    else
+      event.respond "No timer registered for **#{mob}**."
+    end
   end
 end
 
@@ -585,37 +617,6 @@ BOT.command(:timers) do |event|
   event << "```"
 end
 
-BOT.command(:remove) do |event, *args|
-  return if event.channel.id != COMMAND_CHANNEL_ID
-
-  if args.size == 0
-    event << "```"
-    event << "!remove [mob name]"
-    event << ""
-    event << "Examples:"
-    event << ""
-    event << "!remove faydedar"
-    event << "```"
-    return
-  end
-
-  mob = args.join(" ")
-  mob.strip!
-
-  timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
-  if timer
-    timer.delete
-    update_timers_channel
-    event.respond "Timer for **#{timer.name}** removed."
-  else
-    event.respond "No such timer for **#{mob}** registered."
-  end
-end
-
-BOT.command(:test) do |event|
-  message = build_timer_message
-  event.respond(message)
-end
 
 threads = []
 threads << Thread.new {
