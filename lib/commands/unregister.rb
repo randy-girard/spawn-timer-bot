@@ -18,14 +18,17 @@ BOT.command(:unregister) do |event, *args|
     timers, found_timer = find_timer_by_mob(mob)
 
     if timers.size > 1 && !found_timer
-      event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+      event.user.pm "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+      event.message.create_reaction("⚠️")
     elsif found_timer || timers.size == 1
       Tod.where(timer_id: found_timer.id).delete
       found_timer.delete
       update_timers_channel
-      event.respond "Registered timer for [#{found_timer.name}] removed."
+      event.user.pm "Registered timer for [#{found_timer.name}] removed."
+      event.message.create_reaction("✅")
     else
-      event.respond "No timer registered for **#{mob}**."
+      event.user.pm "No timer registered for **#{mob}**."
+      event.message.create_reaction("⚠️")
     end
   end
 end

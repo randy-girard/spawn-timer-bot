@@ -25,7 +25,8 @@ BOT.command(:show) do |event, *args|
   if timers.size > 1 && !found_timer
     event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
   elsif found_timer || timers.size == 1
-    show_message(event, found_timer || timers[0])
+    msg = build_show_message(found_timer || timers[0])
+    event.respond(msg)
   else
     event.respond "No timer registered for **#{mob}**."
   end

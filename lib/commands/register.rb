@@ -1,17 +1,19 @@
 BOT.command(:register) do |event, *args|
   return if event.channel.id != COMMAND_CHANNEL_ID
+  output = []
 
   if args.size == 0
-    event << "```"
-    event << "!register [mob name]|[window start or respawn Time](,[window end])(|[variance]) "
-    event << ""
-    event << "Examples:"
-    event << ""
-    event << "!register Faydedar|1 day"
-    event << "!register Vox|1 week|8hours"
-    event << "!register Vessel|2days,7days"
-    event << "!register Test|1 hour, 2 hours|10 minutes"
-    event << "```"
+    output << "```"
+    output << "!register [mob name]|[window start or respawn Time](,[window end])(|[variance]) "
+    output << ""
+    output << "Examples:"
+    output << ""
+    output << "!register Faydedar|1 day"
+    output << "!register Vox|1 week|8hours"
+    output << "!register Vessel|2days,7days"
+    output << "!register Test|1 hour, 2 hours|10 minutes"
+    output << "```"
+    event.respond(output.join("\n"))
   else
     mob, window, variance = args.join(" ").split("|")
     window_start, window_end = window.split(",") if window
@@ -24,22 +26,26 @@ BOT.command(:register) do |event, *args|
     special = "@!?<>',?[]}{=)(*&^%$#`~{}"
     regex = /[#{special.gsub(/./){|char| "\\#{char}"}}]/
     if mob && mob.to_s.downcase =~ regex
-      event.respond "Mob name [#{mob}] has invalid characters."
+      event.user.pm "Mob name [#{mob}] has invalid characters."
+      event.message.create_reaction("⚠️")
       return
     end
 
-    if window_start && window_start.count("^0-9").zero?
-      event.respond "Window Start/Spawn time [#{window_start}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+    if window_start && !window_start.match?(/^[0-9]/)
+      event.user.pm "Window Start/Spawn time [#{window_start}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      event.message.create_reaction("⚠️")
       return
     end
 
-    if window_end && window_end.count("^0-9").zero?
-      event.respond "Window End [#{window_end}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+    if window_end && !window_end.match?(/^[0-9]/)
+      event.user.pm "Window End [#{window_end}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      event.message.create_reaction("⚠️")
       return
     end
 
-    if variance && variance.count("^0-9").zero?
-      event.respond "Variance [#{variance}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+    if variance && !variance.match?(/^[0-9]/)
+      event.user.pm "Variance [#{variance}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
+      event.message.create_reaction("⚠️")
       return
     end
 
@@ -65,8 +71,10 @@ BOT.command(:register) do |event, *args|
 
     window += " registered!"
 
-    event.respond "Timer for **#{mob}** #{window}"
+    event.user.pm "Timer for **#{mob}** #{window}"
+    event.message.create_reaction("✅")
 
-    show_message(event, timer)
+    msg = build_show_message(timer)
+    event.user.pm(msg)
   end
 end

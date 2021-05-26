@@ -1,7 +1,8 @@
 require_relative "message_one"
 require_relative "message_two"
 
-def show_message(event, timer)
+def build_show_message(timer)
+  event = []
   event << "```"
   event << "Configuration for #{timer.name}."
   event << ""
@@ -18,4 +19,5 @@ def show_message(event, timer)
   end
   event << "Alerted: #{timer.alerted}"
   event << "```"
+  event.join("\n")
 end
