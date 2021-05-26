@@ -1,5 +1,7 @@
 BOT.command(:timers) do |event|
-  return if event.channel.id != COMMAND_CHANNEL_ID
+  if !(event.channel.id == COMMAND_CHANNEL_ID || event.channel.type == 1)
+    return
+  end
 
   timers = Timer.all
 

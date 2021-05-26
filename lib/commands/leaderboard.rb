@@ -1,5 +1,9 @@
 BOT.command(:leaderboard) do |event, *args|
-  return if event.channel.id != COMMAND_CHANNEL_ID
+  output = []
+
+  if !(event.channel.id == COMMAND_CHANNEL_ID || event.channel.type == 1)
+    return
+  end
 
   timerange = args.join(" ")
   timerange.strip!
@@ -16,7 +20,7 @@ BOT.command(:leaderboard) do |event, *args|
   if start_at.to_s.length > 0
     start_at = Chronic.parse(start_at, :context => :past)
     if start_at == nil
-      event << "Unable to parse start date."
+      output << "Unable to parse start date."
       return
     end
   end
@@ -24,22 +28,22 @@ BOT.command(:leaderboard) do |event, *args|
   if end_at.to_s.length > 0
     end_at = Chronic.parse(end_at, :context => :past)
     if end_at == nil
-      event << "Unable to parse end date."
+      output << "Unable to parse end date."
       return
     end
   end
 
   if start_at && end_at
-    event << "Showing leaderboard from #{start_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")} to #{end_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
+    output << "Showing leaderboard from #{start_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")} to #{end_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
   elsif start_at
-    event << "Showing leaderboard since #{start_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
+    output << "Showing leaderboard since #{start_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
   elsif end_at
-    event << "Showing leaderboard ending #{end_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
+    output << "Showing leaderboard ending #{end_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")}"
   else
-    event << "Showing All-time leaderboard"
+    output << "Showing All-time leaderboard"
   end
 
-  event << ""
+  output << ""
 
   num_tods = 0
 
@@ -60,13 +64,13 @@ BOT.command(:leaderboard) do |event, *args|
 
       if tods.size > 0
         num_tods += tods.size
-        event << "**#{timer.name}**"
-        event << '```'
-        event << "#{"Name".ljust(30, ' ')}Count"
+        output << "**#{timer.name}**"
+        output << '```'
+        output << "#{"Name".ljust(30, ' ')}Count"
         tods.each do |tod|
-          event << "#{tod[:display_name].ljust(30, ' ')}#{tod[:count]}"
+          output << "#{tod[:display_name].ljust(30, ' ')}#{tod[:count]}"
         end
-        event << '```'
+        output << '```'
       end
     end
   else
@@ -86,8 +90,8 @@ BOT.command(:leaderboard) do |event, *args|
       users = Tod.order("created_at DESC")
                  .select_hash(:user_id, :display_name)
       num_tods += tods.size
-      event << '```'
-      event << "Rank  #{"Name".ljust(30, ' ')}Count"
+      output << '```'
+      output << "Rank  #{"Name".ljust(30, ' ')}Count"
       tods.each_with_index do |tod, index|
         str = ""
         if index == 0
@@ -100,17 +104,17 @@ BOT.command(:leaderboard) do |event, *args|
           str += (index + 1).to_s
         end
         username = users[tod[:user_id]].to_s.truncate(29)
-        event << "#{str.rjust(3, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
+        output << "#{str.rjust(3, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
       end
-      event << '```'
+      output << '```'
     end
   end
 
   if num_tods == 0
-    event << "```"
-    event << "There have been no TODs recorded during that time."
-    event << "```"
+    output << "```"
+    output << "There have been no TODs recorded during that time."
+    output << "```"
   end
 
-  ""
+  event.respond(output.join("\n"))
 end

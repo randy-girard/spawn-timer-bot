@@ -1,14 +1,19 @@
 BOT.command(:show) do |event, *args|
-  return if event.channel.id != COMMAND_CHANNEL_ID
+  if !(event.channel.id == COMMAND_CHANNEL_ID || event.channel.type == 1)
+    return
+  end
+
+  output = []
 
   if args.size == 0
-    event << "```"
-    event << "!show [mob name]"
-    event << ""
-    event << "Examples:"
-    event << ""
-    event << "!show Faydedar"
-    event << "```"
+    output << "```"
+    output << "!show [mob name]"
+    output << ""
+    output << "Examples:"
+    output << ""
+    output << "!show Faydedar"
+    output << "```"
+    event.respond(output.join("\n"))
     return
   end
 

@@ -32,59 +32,67 @@ BOT.command(:tod) do |event, *args|
   manual_tod.strip! if manual_tod
 
   tod = if manual_tod.to_s.length > 0
-          time = nil
-          selected_timezone = nil
-          begin
-            has_timezone = false
-            manual_tod.upcase!
-            TIMEZONES.each do |key , value|
-              if manual_tod.match?(key)
-                selected_timezone = value
-                manual_tod.gsub!(/#{key}/, value)
-                has_timezone = true
-              end
-            end
-
-            if has_timezone == false
-              time = Chronic.parse(manual_tod, :context => :past)
-            end
-          rescue => ex
-            puts "Chronic parse error: [#{manual_tod}]: #{ex.message}"
+    begin
+      time = nil
+      selected_timezone = nil
+      begin
+        has_timezone = false
+        manual_tod.upcase!
+        TIMEZONES.each do |key , value|
+          if manual_tod.match?(key)
+            selected_timezone = value
+            manual_tod.gsub!(/#{key}/, value)
+            has_timezone = true
           end
-
-          if time
-            parsed_time = time
-          elsif selected_timezone
-            parsed_time = Time.find_zone!(selected_timezone).parse(manual_tod)
-          else
-            parsed_time = Time.parse(manual_tod)
-          end
-
-          if parsed_time && has_timezone
-            parsed_time = parsed_time - 1.hour if parsed_time.dst?
-          end
-
-          parsed_time
-        else
-          Time.now
         end
 
+        if has_timezone == false
+          time = Chronic.parse(manual_tod, :context => :past)
+        end
+      rescue => ex
+        puts "Chronic parse error: [#{manual_tod}]: #{ex.message}"
+      end
+
+      if time
+        parsed_time = time
+      elsif selected_timezone
+        parsed_time = Time.find_zone!(selected_timezone).parse(manual_tod)
+      else
+        parsed_time = Time.parse(manual_tod)
+      end
+
+      if parsed_time && has_timezone
+        parsed_time = parsed_time - 1.hour if parsed_time.dst?
+      end
+
+      parsed_time
+    rescue => ex
+      puts "Time Parse Error [#{manual_tod}]: #{ex.message}"
+      nil
+    end
+  else
+    Time.now
+  end
+
   if tod.to_s.length == 0
-    event.respond "Unable to record that time of death. Please try again."
+    event.user.pm "Unable to record that time of death. Please try again."
+    event.message.create_reaction("⚠️")
     return
   end
 
   timers, found_timer = find_timer_by_mob(mob)
 
   if timers.size > 1 && !found_timer
-    event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    event.user.pm "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    event.message.create_reaction("⚠️")
   elsif found_timer || timers.size == 1
     timer = found_timer || timers[0]
 
     last_spawn = last_spawn_time_start(mob)
 
     if last_spawn && manual_tod && tod < last_spawn
-      event.respond "Time of death is older than potential spawn timer. Please try again."
+      event.user.pm "Time of death is older than potential spawn timer. Please try again."
+      event.message.create_reaction("⚠️")
     else
       timer.last_tod = tod.to_f
       timer.alerted = nil
@@ -100,9 +108,11 @@ BOT.command(:tod) do |event, *args|
       todrecord.save
 
       update_timers_channel
-      event.respond "Time of death for **#{timer.name}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+      event.user.pm "Time of death for **#{timer.name}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+      event.message.create_reaction("✅")
     end
   else
-    event.respond "No timer registered for **#{mob}**."
+    event.user.pm "No timer registered for **#{mob}**."
+    event.message.create_reaction("⚠️")
   end
 end
