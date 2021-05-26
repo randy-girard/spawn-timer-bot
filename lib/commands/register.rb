@@ -23,9 +23,7 @@ BOT.command(:register) do |event, *args|
     window_start.strip! if window_start
     window_end.strip! if window_end
 
-    special = "@!?<>',?[]}{=)(*&^%$#`~{}"
-    regex = /[#{special.gsub(/./){|char| "\\#{char}"}}]/
-    if mob && mob.to_s.downcase =~ regex
+    if mob && mob.to_s.downcase =~ /@!?<>',?\[\]}{=\)\(*&^%$#`~{}/
       event.user.pm "Mob name [#{mob}] has invalid characters."
       event.message.create_reaction("⚠️")
       return
