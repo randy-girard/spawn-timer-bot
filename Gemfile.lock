@@ -11,6 +11,7 @@ GEM
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
     concurrent-ruby (1.1.8)
+    diff-lcs (1.4.4)
     discordrb (3.4.0)
       discordrb-webhooks (~> 3.3.0)
       ffi (>= 1.9.24)
@@ -48,8 +49,22 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    rspec (3.10.0)
+      rspec-core (~> 3.10.0)
+      rspec-expectations (~> 3.10.0)
+      rspec-mocks (~> 3.10.0)
+    rspec-core (3.10.1)
+      rspec-support (~> 3.10.0)
+    rspec-expectations (3.10.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-mocks (3.10.2)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.10.0)
+    rspec-support (3.10.2)
     sequel (5.44.0)
     sqlite3 (1.4.2)
+    timecop (0.9.4)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
@@ -74,8 +89,10 @@ DEPENDENCIES
   foreman
   pg
   rake
+  rspec
   sequel
   sqlite3
+  timecop
 
 RUBY VERSION
    ruby 2.7.2p137

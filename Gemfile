@@ -19,4 +19,6 @@ gem 'activesupport'
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'rspec'
+  gem 'timecop'
 end
