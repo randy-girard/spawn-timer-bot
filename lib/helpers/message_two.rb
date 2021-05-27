@@ -108,7 +108,7 @@ def build_timer_message_two
             .sort_by {|tod| tod[:count] }
             .reverse[0..4]
   if tods.size > 0
-    users = Tod.order("created_at DESC")
+    users = Tod.order(Sequel.lit("created_at DESC"))
                .select_hash(:user_id, :display_name)
     message << "\:trophy: __**Leaderboard (Top 5)**__"
     message << '```'
