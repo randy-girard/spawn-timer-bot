@@ -47,7 +47,7 @@ BOT.command(:tod) do |event, *args|
         end
 
         if has_timezone == false
-          time = Chronic.parse(manual_tod, :context => :past)
+          time = Chronic.parse(manual_tod, :context => :past, ambiguous_time_range: :none)
         end
       rescue => ex
         puts "Chronic parse error: [#{manual_tod}]: #{ex.message}"
