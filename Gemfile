@@ -16,6 +16,7 @@ gem 'dotiw'
 gem 'pg'
 gem 'sequel'
 gem 'activesupport'
+gem 'require_all'
 
 group :development, :test do
   gem 'sqlite3'

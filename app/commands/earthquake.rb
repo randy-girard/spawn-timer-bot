@@ -4,6 +4,7 @@ BOT.command(:earthquake) do |event|
   Timer.all.each do |timer|
     timer.last_tod = nil
     timer.alerted = false
+    timer.alerting_soon = false
     timer.save
   end
   update_timers_channel

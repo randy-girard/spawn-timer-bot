@@ -11,13 +11,13 @@ describe TimeParser do
     after { Timecop.return }
 
     it "should parse time" do
-      expectation("one day ago at noon", "2021-05-26 12:00:00 -0400")
-      expectation("May 26 12 pm pst",    "2021-05-26 15:00:00 -0400")
-      expectation("may 1st",             "2021-05-01 12:00:00 -0400")
-      expectation("10:57 pst",           "2021-05-26 13:57:00 -0400")
-      expectation("10:58 pm pst",        "2021-05-27 01:58:00 -0400")
-      expectation("10:58 pm est",        "2021-05-27 22:58:00 -0400")
-      expectation("5/3 10:58 pm est",    "2021-05-03 22:58:00 -0400")
+      expectation("one day ago at noon",     "2021-05-26 12:00:00 -0400")
+      expectation("May 26 12 pm pst",        "2021-05-26 15:00:00 -0400")
+      expectation("may 1st",                 "2021-05-01 12:00:00 -0400")
+      expectation("10:57 pst",               "2021-05-26 13:57:00 -0400")
+      expectation("10:58 pm pst",            "2021-05-27 01:58:00 -0400")
+      expectation("10:58 pm est",            "2021-05-27 22:58:00 -0400")
+      expectation("5/3 10:58 pm est",        "2021-05-03 22:58:00 -0400")
     end
   end
 

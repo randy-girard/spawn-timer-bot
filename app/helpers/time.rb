@@ -15,6 +15,23 @@ def in_window(mob)
   end
 end
 
+def alerting_soon(mob)
+  timers, found_timer = find_timer_by_mob(mob)
+  timer = found_timer || timers[0]
+
+  if timer
+    next_spawn = next_spawn_time_start(mob)
+
+    if next_spawn
+      Time.now > next_spawn - (1 * 60 * 60)
+    else
+      false
+    end
+  else
+    false
+  end
+end
+
 
 def next_spawn_time_start(mob, last_tod = nil)
   timers, found_timer = find_timer_by_mob(mob)

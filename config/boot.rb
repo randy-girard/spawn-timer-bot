@@ -14,11 +14,5 @@ ENV["RACK_ENV"] ||= "development"
 include DOTIW::Methods
 
 require_relative 'initializers/constants'
-require_relative 'initializers/sequel'
-
-require_relative '../app/models/timer'
-require_relative '../app/models/setting'
-require_relative '../app/models/tod'
-
-require_relative '../lib/time_parser'
-require_relative '../lib/argument_parser'
+require_all 'config/initializers'
+require_all 'app'

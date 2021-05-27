@@ -18,6 +18,7 @@ def build_show_message(timer)
     event << "Last TOD: NEED TOD"
   end
   event << "Alerted: #{timer.alerted}"
+  event << "Alerting Soon: #{timer.alerting_soon}"
   event << "```"
   event.join("\n")
 end

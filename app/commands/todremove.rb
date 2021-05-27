@@ -18,14 +18,19 @@ BOT.command(:todremove) do |event, *args|
   timers, found_timer = find_timer_by_mob(mob)
 
   if timers.size > 1 && !found_timer
-    event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    event.user.pm "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    event.message.create_reaction("⚠️")
   elsif found_timer || timers.size == 1
     timer = found_timer || timers[0]
     timer.last_tod = nil
+    timer.alerting_soon = false
+    timer.alerted = nil
     timer.save
     update_timers_channel
-    event.respond "Time of death removed for **#{timer.name}**!"
+    event.user.pm "Time of death removed for **#{timer.name}**!"
+    event.message.create_reaction("✅")
   else
-    event.respond "No timer registered for **#{mob}**."
+    event.user.pm "No timer registered for **#{mob}**."
+    event.message.create_reaction("⚠️")
   end
 end

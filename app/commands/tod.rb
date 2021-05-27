@@ -48,6 +48,7 @@ BOT.command(:tod) do |event, *args|
     else
       timer.last_tod = tod.to_f
       timer.alerted = nil
+      timer.alerting_soon = false
       timer.save
 
       todrecord = Tod.new
