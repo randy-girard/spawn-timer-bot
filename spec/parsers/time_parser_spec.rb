@@ -35,4 +35,14 @@ describe TimeParser do
       expectation("5/3 10:58 pm est",    "2021-05-03 22:58:00 -0400")
     end
   end
+
+  it "should part ambiguous am or pm" do
+    Timecop.freeze(Time.local(2021, 5, 28, 5, 52, 0)) do
+      expectation("3:00", "2021-05-28 3:00:00 -0400")
+    end
+
+    Timecop.freeze(Time.local(2021, 5, 28, 20, 52, 0)) do
+      expectation("3:00", "2021-05-28 15:00:00 -0400")
+    end
+  end
 end
