@@ -115,6 +115,7 @@ def build_timer_message_two
     message << "Rank  #{"Name".ljust(30, ' ')}Count"
     tods.each_with_index do |tod, index|
       str = ""
+      just = 3
       if index == 0
         str += "🥇"
       elsif index == 1
@@ -122,10 +123,11 @@ def build_timer_message_two
       elsif index == 2
         str += "🥉"
       else
+        just = 4
         str += (index + 1).to_s
       end
       username = users[tod[:user_id]].to_s.truncate(29)
-      message << "#{str.rjust(3, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
+      message << "#{str.rjust(just, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
     end
     message << '```'
     message << ""
