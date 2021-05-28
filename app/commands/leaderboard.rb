@@ -87,7 +87,7 @@ BOT.command(:leaderboard) do |event, *args|
     tods = tods.all.sort_by {|tod| tod[:count] }.reverse
 
     if tods.size > 0
-      users = Tod.order("created_at DESC")
+      users = Tod.order(Sequel.lit("created_at DESC"))
                  .select_hash(:user_id, :display_name)
       num_tods += tods.size
       output << '```'
