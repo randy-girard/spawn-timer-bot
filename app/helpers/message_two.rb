@@ -92,8 +92,8 @@ def build_timer_message_two
         line += "#{truncated_timer_name}".ljust(30, ' ')
         line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(25, ' ')
         line += "#{window_start}".ljust(20, ' ')
-        if !no_window_end
-          line += "  ✅"
+        if !no_window_end && timer.display_window
+          line += timer.display_window
         end
         upcoming_message << line
       end
