@@ -3,7 +3,12 @@ def update_timers_channel
 
   if message.to_s.length > 0
     if @timers_message
-      @timers_message.edit(message.to_s)
+      begin
+        @timers_message.edit(message.to_s)
+      rescue => ex
+        puts ex.message
+        puts ex.backtrace.join("\n")
+      end
     else
       @timers_message = BOT.send_message(TIMER_CHANNEL_ID, message.to_s)
       Setting.save_by_key("timer_message_id", @timers_message.id)
