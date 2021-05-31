@@ -146,12 +146,12 @@ def build_timer_message_two
     message << "```"
   end
 
-  if any_need_tod
-    message << ""
-    message << "\:warning: __**Missing Timers**__"
-    message << ""
-    message << need_tod_message.sort.join(", ")
-  end
+  #if any_need_tod
+  #  message << ""
+  #  message << "\:warning: __**Missing Timers**__"
+  #  message << ""
+  #  message << need_tod_message.sort.join(", ")
+  #end
 
   message.join("\n")
 end
