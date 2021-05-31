@@ -93,20 +93,8 @@ BOT.command(:leaderboard) do |event, *args|
       output << '```'
       output << "Rank  #{"Name".ljust(30, ' ')}Count"
       tods.each_with_index do |tod, index|
-        str = ""
-        just = 3
-        if index == 0
-          str += "🥇"
-        elsif index == 1
-          str += "🥈"
-        elsif index == 2
-          str += "🥉"
-        else
-          just = 4
-          str += (index + 1).to_s
-        end
         username = users[tod[:user_id]].to_s.truncate(29)
-        output << "#{str.rjust(just, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
+        output << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
       end
       output << '```'
     end

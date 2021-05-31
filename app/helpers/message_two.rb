@@ -8,25 +8,25 @@ def build_timer_message_two
   upcoming_message = [
     [
       "Timer".ljust(30, ' '),
-      "At".ljust(25, ' '),
       "In".ljust(20, ' '),
-      "Window"
+      "Window".ljust(15, ' '),
+      "At"
     ].join("")
   ]
   in_window_message = [
     [
       "Timer".ljust(30, ' '),
-      "Ends At".ljust(25, ' '),
       "Ends In".ljust(20, ' '),
-      "Percent"
+      "Percent".ljust(15, ' '),
+      "Ends At"
     ].join("")
   ]
 
   ended_recently_message = [
     [
       "Timer".ljust(30, ' '),
-      "Ended At".ljust(25, ' '),
-      "Ended".ljust(20, ' ')
+      "Ended At".ljust(20, ' '),
+      "Ended"
     ].join("")
   ]
 
@@ -75,26 +75,28 @@ def build_timer_message_two
         if ends_at > Time.now
           any_in_window = true
           line += "#{truncated_timer_name}".ljust(30, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(25, ' ')
           line += "#{window_end}".ljust(20, ' ')
-          line += percentage
+          line += percentage.to_s.ljust(15, ' ')
+          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
           in_window_message << line
         else
           any_ended_recently = true
           line += "#{truncated_timer_name}".ljust(30, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(25, ' ')
           line += "#{window_end} ago".ljust(20, ' ')
+          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
           ended_recently_message << line
         end
       else
         line = ""
         any_mobs = true
         line += "#{truncated_timer_name}".ljust(30, ' ')
-        line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(25, ' ')
         line += "#{window_start}".ljust(20, ' ')
         if !no_window_end && timer.display_window
-          line += timer.display_window
+          line += timer.display_window.ljust(15, ' ')
+        else
+          line += "".ljust(15, ' ')
         end
+        line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
         upcoming_message << line
       end
     rescue => ex
@@ -114,20 +116,8 @@ def build_timer_message_two
     message << '```'
     message << "Rank  #{"Name".ljust(30, ' ')}Count"
     tods.each_with_index do |tod, index|
-      str = ""
-      just = 3
-      if index == 0
-        str += "🥇"
-      elsif index == 1
-        str += "🥈"
-      elsif index == 2
-        str += "🥉"
-      else
-        just = 4
-        str += (index + 1).to_s
-      end
       username = users[tod[:user_id]].to_s.truncate(29)
-      message << "#{str.rjust(just, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
+      message << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
     end
     message << '```'
     message << ""
