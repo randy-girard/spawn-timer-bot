@@ -33,6 +33,18 @@ class TimeParser
         puts "Chronic parse error: [#{manual_tod}]: #{ex.message}"
       end
 
+      ampm = Chronic.parse(manual_tod, :context => :past, ambiguous_time_range: :none)
+      has_ampm = manual_tod.match(/(AM|PM)/)
+      ampm_str = ampm.strftime("%p")
+
+      if !time && ampm && !has_ampm
+        if selected_timezone
+          manual_tod.sub!("#{selected_timezone}", "#{ampm_str} #{selected_timezone}")
+        else
+          manual_tod += " #{ampm_str}"
+        end
+      end
+
       if time
         parsed_time = time
       elsif selected_timezone

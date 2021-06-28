@@ -14,7 +14,7 @@ describe TimeParser do
       expectation("one day ago at noon",     "2021-05-26 12:00:00 -0400")
       expectation("May 26 12 pm pst",        "2021-05-26 15:00:00 -0400")
       expectation("may 1st",                 "2021-05-01 12:00:00 -0400")
-      expectation("10:57 pst",               "2021-05-26 13:57:00 -0400")
+      expectation("10:57 pst",               "2021-05-27 01:57:00 -0400")
       expectation("10:58 pm pst",            "2021-05-27 01:58:00 -0400")
       expectation("10:58 pm est",            "2021-05-27 22:58:00 -0400")
       expectation("5/3 10:58 pm est",        "2021-05-03 22:58:00 -0400")
@@ -43,6 +43,10 @@ describe TimeParser do
 
     Timecop.freeze(Time.local(2021, 5, 28, 20, 52, 0)) do
       expectation("3:00", "2021-05-28 15:00:00 -0400")
+    end
+
+    Timecop.freeze(Time.parse("2021-06-27 19:22:00")) do
+      expectation("6:46 est", "2021-06-27 18:46:00 -0400")
     end
   end
 end
