@@ -117,6 +117,7 @@ def build_timer_message_two
     message << "Rank  #{"Name".ljust(30, ' ')}Count"
     tods.each_with_index do |tod, index|
       username = users[tod[:user_id]].to_s.truncate(29)
+      username = clean_username(username)
       message << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
     end
     message << '```'
