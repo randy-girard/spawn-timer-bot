@@ -1,4 +1,4 @@
-BOT.command(:tod) do |event, *args|
+def command_tod(event, *args)
   return if event.channel.id != COMMAND_CHANNEL_ID
 
   if args.size == 0
@@ -42,7 +42,13 @@ BOT.command(:tod) do |event, *args|
 
     last_spawn = last_spawn_time_start(mob)
 
-    if last_spawn && manual_tod && tod < last_spawn
+    next_spawn_start_with_tod = next_spawn_time_start(mob, tod)
+    next_spawn_end_with_tod = next_spawn_time_end(mob, tod)
+
+    if timer.has_window? && next_spawn_start_with_tod && next_spawn_end_with_tod && (Time.now < last_spawn || next_spawn_end_with_tod < Time.now)
+      event.user.pm "Current time is outside of potential window and would have expired by now. Please try again."
+      event.message.create_reaction("⚠️")
+    elsif !timer.has_window? && last_spawn && manual_tod && tod < last_spawn
       event.user.pm "Time of death is older than potential spawn timer. Please try again."
       event.message.create_reaction("⚠️")
     else
@@ -68,4 +74,8 @@ BOT.command(:tod) do |event, *args|
     event.user.pm "No timer registered for **#{mob}**."
     event.message.create_reaction("⚠️")
   end
+end
+
+BOT.command(:tod) do |event, *args|
+  command_tod(event, *args)
 end

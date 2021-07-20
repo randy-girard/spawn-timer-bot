@@ -65,11 +65,12 @@ def last_spawn_time_start(mob)
 end
 
 
-def next_spawn_time_end(mob)
-  timers, timer = find_timer_by_mob(mob)
+def next_spawn_time_end(mob, last_tod = nil)
+  timers, found_timer = find_timer_by_mob(mob)
+  timer = found_timer || timers[0]
 
-  if timer && timer.last_tod
-    tod = Time.at(timer.last_tod)
+  if timer && (last_tod || timer.last_tod)
+    tod = Time.at(last_tod || timer.last_tod)
 
     if timer.window_end && timer.variance
       tod + ChronicDuration.parse(timer.window_end) + ChronicDuration.parse(timer.variance)
@@ -84,7 +85,6 @@ def next_spawn_time_end(mob)
     false
   end
 end
-
 
 def past_possible_spawn_time(mob)
   next_spawn = next_spawn_time_end(mob)

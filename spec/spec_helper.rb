@@ -15,6 +15,8 @@ ENV["RACK_ENV"] = "test"
 # it.
 
 require_relative "../config/boot"
+require "database_cleaner/sequel"
+DatabaseCleaner.allow_remote_database_url = true
 require "timecop"
 
 
@@ -105,4 +107,14 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 =end
+  config.before(:suite) do
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+  end
+
+  config.around(:each) do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
+  end
 end

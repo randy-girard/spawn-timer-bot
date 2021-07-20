@@ -23,3 +23,7 @@ group :development, :test do
   gem 'rspec'
   gem 'timecop'
 end
+
+group :test do
+  gem 'database_cleaner-sequel'
+end

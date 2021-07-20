@@ -11,6 +11,10 @@ GEM
     chronic_duration (0.10.6)
       numerizer (~> 0.1.1)
     concurrent-ruby (1.1.8)
+    database_cleaner-core (2.0.1)
+    database_cleaner-sequel (2.0.0)
+      database_cleaner-core (~> 2.0.0)
+      sequel
     diff-lcs (1.4.4)
     discordrb (3.4.0)
       discordrb-webhooks (~> 3.3.0)
@@ -84,6 +88,7 @@ DEPENDENCIES
   activesupport
   chronic
   chronic_duration
+  database_cleaner-sequel
   discordrb
   dotenv
   dotiw

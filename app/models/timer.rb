@@ -1,4 +1,8 @@
 class Timer < Sequel::Model
+  def has_window?
+    window_end.to_s.length > 0 || variance.to_s.length > 0
+  end
+
   def display_window
     duration = nil
 
