@@ -105,24 +105,24 @@ def build_timer_message_two
     end
   end
 
-  tods = Tod.group_and_count(:user_id)
-            .all
-            .sort_by {|tod| tod[:count] }
-            .reverse[0..4]
-  if tods.size > 0
-    users = Tod.order(Sequel.lit("created_at DESC"))
-               .select_hash(:user_id, :display_name)
-    message << "\:trophy: __**Leaderboard (Top 5)**__"
-    message << '```'
-    message << "Rank  #{"Name".ljust(30, ' ')}Count"
-    tods.each_with_index do |tod, index|
-      username = users[tod[:user_id]].to_s.truncate(29)
-      username = clean_username(username)
-      message << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
-    end
-    message << '```'
-    message << ""
-  end
+  # tods = Tod.group_and_count(:user_id)
+  #           .all
+  #           .sort_by {|tod| tod[:count] }
+  #           .reverse[0..4]
+  # if tods.size > 0
+  #   users = Tod.order(Sequel.lit("created_at DESC"))
+  #              .select_hash(:user_id, :display_name)
+  #   message << "\:trophy: __**Leaderboard (Top 5)**__"
+  #   message << '```'
+  #   message << "Rank  #{"Name".ljust(30, ' ')}Count"
+  #   tods.each_with_index do |tod, index|
+  #     username = users[tod[:user_id]].to_s.truncate(29)
+  #     username = clean_username(username)
+  #     message << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
+  #   end
+  #   message << '```'
+  #   message << ""
+  # end
 
   if any_mobs
     message << "\:dragon: __**Timers**__"
