@@ -60,6 +60,10 @@ def build_timer_message_two
     begin
       truncated_timer_name = timer.name.to_s.truncate(29)
 
+      if timer.skip_count.to_i > 0
+        truncated_timer_name = truncated_timer_name + ("*" * timer.skip_count.to_i)
+      end
+
       if !last_tod
         any_need_tod = true
         need_tod_message << timer.name

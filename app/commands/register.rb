@@ -53,6 +53,7 @@ BOT.command(:register) do |event, *args|
     timer.window_start = window_start
     timer.window_end = window_end
     timer.variance = variance
+    timer.skip_count = 0
     timer.save
 
     update_timers_channel

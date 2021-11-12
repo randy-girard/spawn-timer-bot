@@ -55,6 +55,7 @@ def command_tod(event, *args)
       timer.last_tod = tod.to_f
       timer.alerted = nil
       timer.alerting_soon = false
+      timer.skip_count = 0
       timer.save
 
       todrecord = Tod.new

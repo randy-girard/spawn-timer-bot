@@ -25,6 +25,7 @@ BOT.command(:todremove) do |event, *args|
     timer.last_tod = nil
     timer.alerting_soon = false
     timer.alerted = nil
+    timer.skip_count = 0
     timer.save
     update_timers_channel
     event.user.pm "Time of death removed for **#{timer.name}**!"

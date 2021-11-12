@@ -17,6 +17,8 @@ BOT.command(:help) do |event|
   output << "!rename      - Renames an existing timer."
   output << "!tod         - Record a time of death for a registered timer."
   output << "!todremove   - Remove a time of death for a registered timer."
+  output << "!skip        - Record a skipped spawn for a registered timer."
+  output << "!unskip      - Removes the last skip for a registered timer."
   output << "!timers      - See the list of timers that have been registered."
   output << "!earthquake  - Resets the TOD for all timers. Warning!!! Know what you are doing."
   output << "!leaderboard - Displays leaderboard of TOD by user"

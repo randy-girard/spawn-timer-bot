@@ -20,7 +20,7 @@ BOT.command(:unregister) do |event, *args|
     if timers.size > 1 && !found_timer
       event.user.pm "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
       event.message.create_reaction("⚠️")
-    elsif found_timer || timers.size == 1
+    elsif found_timer
       Tod.where(timer_id: found_timer.id).delete
       found_timer.delete
       update_timers_channel

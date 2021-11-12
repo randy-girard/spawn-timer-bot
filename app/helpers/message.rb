@@ -9,6 +9,7 @@ def build_show_message(timer)
   event << "Start: #{timer.window_start}"
   event << "End: #{timer.window_end}"
   event << "Variance: #{timer.variance}"
+  event << "Skip Count: #{timer.skip_count}"
   if timer.last_tod
     event << "Last TOD: #{Time.at(timer.last_tod)} (#{display_time_ago(Time.at(timer.last_tod))})"
     event << "In Window: #{in_window(timer.name)}"
