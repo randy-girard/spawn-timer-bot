@@ -28,6 +28,7 @@ while true
 
 
     if UPDATE_TIMERS_ALERT_CHANNEL && timer_update?(:timer_alert)
+      send_timer_channel_update = false
       timers ||= Timer.all
       timers.each do |timer|
         save_timer = false
@@ -61,10 +62,13 @@ while true
 
         if save_timer
           timer.save_changes
+          send_timer_channel_update = true
         end
       end
 
-      update_timers_channel(timers: timers)      
+      if send_timer_channel_update
+        update_timers_channel(timers: timers)
+      end
     end
   rescue => ex
     puts ex.message
