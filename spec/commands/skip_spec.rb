@@ -33,6 +33,8 @@ describe "SkipCommand" do
     expect(window_start).to eq("17h")
     expect(window_end).to eq("19h")
 
+    Timecop.travel(Time.local(2021, 5, 27, 20, 57, 0))
+
     expect {
       command_skip(event, ["window"])
     }.to change {
@@ -44,8 +46,8 @@ describe "SkipCommand" do
     window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
     window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
-    expect(window_start).to eq("1d 10h")
-    expect(window_end).to eq("1d 14h")
+    expect(window_start).to eq("14h 59m 59s")
+    expect(window_end).to eq("18h 59m 59s")
   end
 
   it "should record first skip properly with window" do
@@ -73,6 +75,8 @@ describe "SkipCommand" do
     expect(window_start).to eq("17h")
     expect(window_end).to eq("19h")
 
+    Timecop.travel(Time.local(2021, 5, 27, 20, 57, 0))
+
     expect {
       command_skip(event, ["window"])
     }.to change {
@@ -84,8 +88,8 @@ describe "SkipCommand" do
     window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
     window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
-    expect(window_start).to eq("1d 10h")
-    expect(window_end).to eq("1d 14h")
+    expect(window_start).to eq("14h 59m 59s")
+    expect(window_end).to eq("18h 59m 59s")
   end
 
   it "should record second skip properly with variance" do
@@ -113,6 +117,8 @@ describe "SkipCommand" do
     expect(window_start).to eq("1d 10h")
     expect(window_end).to eq("1d 14h")
 
+    Timecop.travel(Time.local(2021, 5, 28, 15, 57, 0))
+
     expect {
       command_skip(event, ["window"])
     }.to change {
@@ -124,8 +130,8 @@ describe "SkipCommand" do
     window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
     window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
-    expect(window_start).to eq("2d 3h")
-    expect(window_end).to eq("2d 9h")
+    expect(window_start).to eq("12h 59m 59s")
+    expect(window_end).to eq("18h 59m 59s")
   end
 
   it "should record second skip properly with window" do
@@ -153,6 +159,8 @@ describe "SkipCommand" do
     expect(window_start).to eq("1d 10h")
     expect(window_end).to eq("1d 14h")
 
+    Timecop.travel(Time.local(2021, 5, 28, 15, 57, 0))
+
     expect {
       command_skip(event, ["window"])
     }.to change {
@@ -164,8 +172,8 @@ describe "SkipCommand" do
     window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
     window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
-    expect(window_start).to eq("2d 3h")
-    expect(window_end).to eq("2d 9h")
+    expect(window_start).to eq("12h 59m 59s")
+    expect(window_end).to eq("18h 59m 59s")
   end
 
   it "should record skip properly with variance && window" do
@@ -193,6 +201,8 @@ describe "SkipCommand" do
     expect(window_start).to eq("16h")
     expect(window_end).to eq("20h")
 
+    Timecop.travel(Time.local(2021, 5, 27, 21, 57, 0))
+
     expect {
       command_skip(event, ["window"])
     }.to change {
@@ -204,7 +214,7 @@ describe "SkipCommand" do
     window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
     window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
-    expect(window_start).to eq("1d 8h")
-    expect(window_end).to eq("1d 16h")
+    expect(window_start).to eq("11h 59m 59s")
+    expect(window_end).to eq("19h 59m 59s")
   end
 end

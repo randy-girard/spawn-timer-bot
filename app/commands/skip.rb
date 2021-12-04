@@ -24,7 +24,7 @@ def command_skip(event, *args)
     timer = found_timer || timers[0]
 
     if timer.last_tod.to_s.length > 0
-      ends_at = next_spawn_time_end(timer.name)
+      ends_at = next_spawn_time_end(timer.name, last_tod: timer.last_tod, timer: timer)
 
       if Time.now >= ends_at
         timer.skip_count ||= 0
