@@ -21,14 +21,15 @@ update_timers_channel
 while true
   begin
     timers = nil
+    send_timer_channel_update = false
+
     if UPDATE_TIMERS_CHANNEL && timer_update?(:timer)
       timers ||= Timer.all
-      update_timers_channel(timers: timers)
+      send_timer_channel_update = true
     end
 
 
     if UPDATE_TIMERS_ALERT_CHANNEL && timer_update?(:timer_alert)
-      send_timer_channel_update = false
       timers ||= Timer.all
       timers.each do |timer|
         save_timer = false
@@ -65,14 +66,14 @@ while true
           send_timer_channel_update = true
         end
       end
-
-      if send_timer_channel_update
-        update_timers_channel(timers: timers)
-      end
     end
   rescue => ex
     puts ex.message
     puts ex.backtrace
+  end
+
+  if send_timer_channel_update
+    update_timers_channel(timers: timers)
   end
 
   sleep 1
