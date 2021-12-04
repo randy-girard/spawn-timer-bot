@@ -1,5 +1,5 @@
-def update_timers_channel
-  message = build_timer_message
+def update_timers_channel(timers: nil)
+  message = build_timer_message(timers: timers)
 
   if message.to_s.length > 0
     if @timers_message
@@ -31,9 +31,13 @@ def timer_update?(timer)
   end
 end
 
-def find_timer_by_mob(mob)
-  timers = Timer.where(Sequel.ilike(:name, "%#{mob.to_s}%")).all
-  found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
+def find_timer_by_mob(mob, timer: nil)
+  if timer
+    return [timer], timer
+  else
+    timers = Timer.where(Sequel.ilike(:name, "%#{mob.to_s}%")).all
+    found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
 
-  return timers, found_timer
+    return timers, found_timer
+  end
 end

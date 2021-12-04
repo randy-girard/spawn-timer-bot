@@ -22,7 +22,9 @@ BOT.command(:rename) do |event, *args|
     timer.save
     update_timers_channel
     event.respond "Timer for **#{mob}** has been renamed to **#{new_mob}**."
+    event.message.create_reaction("✅")
   else
     event.respond "No timer registered for **#{mob}**."
+    event.message.create_reaction("⚠️")
   end
 end

@@ -42,8 +42,8 @@ def command_tod(event, *args)
 
     last_spawn = last_spawn_time_start(mob)
 
-    next_spawn_start_with_tod = next_spawn_time_start(mob, tod)
-    next_spawn_end_with_tod = next_spawn_time_end(mob, tod)
+    next_spawn_start_with_tod = next_spawn_time_start(mob, last_tod: tod)
+    next_spawn_end_with_tod = next_spawn_time_end(mob, last_tod: tod)
 
     if timer.has_window? && next_spawn_start_with_tod && next_spawn_end_with_tod && (Time.now < last_spawn || next_spawn_end_with_tod < Time.now)
       event.user.pm "Current time is outside of potential window and would have expired by now. Please try again."

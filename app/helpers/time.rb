@@ -1,9 +1,9 @@
-def in_window(mob)
-  timers, found_timer = find_timer_by_mob(mob)
+def in_window(mob, timer: nil)
+  timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
-  if timer && !past_possible_spawn_time(mob)
-    next_spawn = next_spawn_time_start(mob)
+  if timer && !past_possible_spawn_time(mob, timer: timer)
+    next_spawn = next_spawn_time_start(mob, timer: timer)
 
     if next_spawn
       Time.now > next_spawn
@@ -15,12 +15,12 @@ def in_window(mob)
   end
 end
 
-def alerting_soon(mob)
-  timers, found_timer = find_timer_by_mob(mob)
+def alerting_soon(mob, timer: nil)
+  timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
   if timer
-    next_spawn = next_spawn_time_start(mob)
+    next_spawn = next_spawn_time_start(mob, timer: timer)
 
     if next_spawn
       Time.now > next_spawn - (1 * 60 * 60)
@@ -33,8 +33,8 @@ def alerting_soon(mob)
 end
 
 
-def next_spawn_time_start(mob, last_tod = nil)
-  timers, found_timer = find_timer_by_mob(mob)
+def next_spawn_time_start(mob, last_tod: nil, timer: nil)
+  timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
   if timer && (last_tod || timer.last_tod)
@@ -51,8 +51,8 @@ def next_spawn_time_start(mob, last_tod = nil)
 end
 
 
-def last_spawn_time_start(mob)
-  timers, found_timer = find_timer_by_mob(mob)
+def last_spawn_time_start(mob, timer: nil)
+  timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
   if timer
@@ -65,8 +65,8 @@ def last_spawn_time_start(mob)
 end
 
 
-def next_spawn_time_end(mob, last_tod = nil)
-  timers, found_timer = find_timer_by_mob(mob)
+def next_spawn_time_end(mob, last_tod: nil, timer: nil)
+  timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
   if timer && (last_tod || timer.last_tod)
@@ -86,8 +86,8 @@ def next_spawn_time_end(mob, last_tod = nil)
   end
 end
 
-def past_possible_spawn_time(mob)
-  next_spawn = next_spawn_time_end(mob)
+def past_possible_spawn_time(mob, timer: nil)
+  next_spawn = next_spawn_time_end(mob, timer: timer)
 
   if next_spawn
     Time.now > next_spawn + (10 * 60)

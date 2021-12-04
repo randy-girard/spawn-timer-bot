@@ -1,4 +1,4 @@
-def build_timer_message_two
+def build_timer_message_two(timers: nil)
   any_in_window = false
   any_need_tod = false
   any_mobs = false
@@ -32,7 +32,8 @@ def build_timer_message_two
 
   need_tod_message = []
 
-  Timer.all.sort_by {|timer| next_spawn_time_start(timer.name) || Chronic.parse("100 years from now") }.reverse.each do |timer|
+  timers ||= Timer.all
+  timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.reverse.each do |timer|
     window_start = ""
     starts_at = ""
     ends_at = ""
@@ -43,8 +44,8 @@ def build_timer_message_two
     if timer.last_tod
       tod = Time.at(timer.last_tod)
       last_tod = display_time_ago(tod)
-      starts_at = next_spawn_time_start(timer.name)
-      ends_at = next_spawn_time_end(timer.name)
+      starts_at = next_spawn_time_start(timer.name, timer: timer)
+      ends_at = next_spawn_time_end(timer.name, timer: timer)
       window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
 
       if timer.window_end || timer.variance
@@ -67,7 +68,7 @@ def build_timer_message_two
       if !last_tod
         any_need_tod = true
         need_tod_message << timer.name
-      elsif in_window(timer.name)
+      elsif in_window(timer.name, timer: timer)
         line = ""
 
         if ends_at > Time.now
@@ -128,11 +129,13 @@ def build_timer_message_two
   #   message << ""
   # end
 
+  any_message = false
   if any_mobs
     message << "\:dragon: __**Timers**__"
     message << "```"
     message << upcoming_message
     message << "```"
+    any_message = true
   end
 
   if any_in_window
@@ -141,6 +144,7 @@ def build_timer_message_two
     message << "```"
     message << in_window_message
     message << "```"
+    any_message = true
   end
 
   if any_ended_recently
@@ -149,6 +153,7 @@ def build_timer_message_two
     message << "```"
     message << ended_recently_message
     message << "```"
+    any_message = true
   end
 
   #if any_need_tod
@@ -157,6 +162,12 @@ def build_timer_message_two
   #  message << ""
   #  message << need_tod_message.sort.join(", ")
   #end
+
+  if !any_message
+    message << "```"
+    message << "There are no timers currently running."
+    message << "```"
+  end
 
   message.join("\n")
 end
