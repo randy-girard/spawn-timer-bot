@@ -40,22 +40,24 @@ class Timer < Sequel::Model
   def display_window
     duration = nil
 
-    if window_end && variance
+    parsed_variance = if variance
+      ChronicDuration.parse(variance)
+    end
+
+    if window_end && parsed_variance
       ws = ChronicDuration.parse(window_start)
       we = ChronicDuration.parse(window_end)
-      v = ChronicDuration.parse(variance)
 
-      duration = ((we + v) - (ws - v))
+      duration = ((we + parsed_variance) - (ws - parsed_variance))
     elsif window_end
       ws = ChronicDuration.parse(window_start)
       we = ChronicDuration.parse(window_end)
 
       duration = (we - ws)
-    elsif variance
+    elsif parsed_variance
       ws = ChronicDuration.parse(window_start)
-      v = ChronicDuration.parse(variance)
 
-      duration = ((ws + v) - (ws - v))
+      duration = ((ws + parsed_variance) - (ws - parsed_variance))
     end
 
     if duration

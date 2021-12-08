@@ -40,8 +40,12 @@ def next_spawn_time_start(mob, last_tod: nil, timer: nil)
   if timer && (last_tod || timer.last_tod)
     tod = Time.at(last_tod || timer.last_tod)
 
-    if timer.variance
-      tod + ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
+    variance = if timer.variance
+      ChronicDuration.parse(timer.variance)
+    end
+
+    if variance
+      tod + ChronicDuration.parse(timer.window_start) - variance
     else
       tod + ChronicDuration.parse(timer.window_start)
     end
@@ -56,8 +60,12 @@ def last_spawn_time_start(mob, timer: nil)
   timer = found_timer || timers[0]
 
   if timer
-    if timer.variance
-      Time.now - ChronicDuration.parse(timer.window_start) - ChronicDuration.parse(timer.variance)
+    variance = if timer.variance
+      ChronicDuration.parse(timer.variance)
+    end
+
+    if variance
+      Time.now - ChronicDuration.parse(timer.window_start) - variance
     else
       Time.now - ChronicDuration.parse(timer.window_start)
     end
@@ -72,12 +80,16 @@ def next_spawn_time_end(mob, last_tod: nil, timer: nil)
   if timer && (last_tod || timer.last_tod)
     tod = Time.at(last_tod || timer.last_tod)
 
-    if timer.window_end && timer.variance
-      tod + ChronicDuration.parse(timer.window_end) + ChronicDuration.parse(timer.variance)
+    variance = if timer.variance
+      ChronicDuration.parse(timer.variance)
+    end
+
+    if timer.window_end && variance
+      tod + ChronicDuration.parse(timer.window_end) + variance
     elsif timer.window_end
       tod + ChronicDuration.parse(timer.window_end)
-    elsif timer.variance
-      tod + ChronicDuration.parse(timer.window_start) + ChronicDuration.parse(timer.variance)
+    elsif variance
+      tod + ChronicDuration.parse(timer.window_start) + variance
     else
       tod + ChronicDuration.parse(timer.window_start)
     end

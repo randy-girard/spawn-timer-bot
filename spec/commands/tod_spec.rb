@@ -114,4 +114,31 @@ describe "TodCommand" do
     command_tod(event, ["window 5 days ago"])
   end
 
+  it "should record tod with 0 variance timer" do
+    window_timer = Timer.create(name: "window", window_start: "2 days", variance: "0 hours")
+
+    user = double("User")
+    expect(user).to receive(:id) { 1 }
+    expect(user).to receive(:name) { "Username" }
+    expect(user).to receive(:display_name) { "Display Name" }
+    expect(user).to receive(:pm).with("Time of death for **window** recorded as Wednesday, May 26 at 01:57:00 AM EDT!")
+
+    channel = double("Channel")
+    expect(channel).to receive(:id) { COMMAND_CHANNEL_ID }
+
+    message = double("Message")
+    expect(message).to receive(:create_reaction).with("✅")
+
+    event = double("Event")
+    expect(event).to receive(:channel) { channel }
+    allow(event).to receive(:user) { user }
+    expect(event).to receive(:message) { message }
+
+    expect {
+      command_tod(event, ["window 1 day ago"])
+    }.to change {
+      Tod.count
+    }.by(1)
+  end
+
 end

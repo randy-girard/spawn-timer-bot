@@ -1,4 +1,4 @@
-BOT.command(:register) do |event, *args|
+def command_register(event, *args)
   return if event.channel.id != COMMAND_CHANNEL_ID
   output = []
 
@@ -76,4 +76,8 @@ BOT.command(:register) do |event, *args|
     msg = build_show_message(timer)
     event.user.pm(msg)
   end
+end
+
+BOT.command(:register) do |event, *args|
+  command_register(event, *args)
 end
