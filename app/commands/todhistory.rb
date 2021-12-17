@@ -23,7 +23,7 @@ BOT.command(:todhistory) do |event, *args|
   elsif found_timer || timers.size == 1
     output = []
     timer = found_timer || timers[0]
-    tods = Tod.where(timer_id: timer.id).order("tod DESC").limit(10)
+    tods = Tod.where(timer_id: timer.id).order(Sequel.lit("tod DESC")).limit(10)
 
     output << "```"
     output << "Last 10 TODs for #{timer.name}:"
