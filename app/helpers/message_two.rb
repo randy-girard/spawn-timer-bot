@@ -7,24 +7,24 @@ def build_timer_message_two(timers: nil)
 
   upcoming_message = [
     [
-      "Timer".ljust(30, ' '),
+      "Timer".ljust(25, ' '),
       "In".ljust(20, ' '),
-      "Window".ljust(15, ' '),
+      "Window".ljust(12, ' '),
       "At"
     ].join("")
   ]
   in_window_message = [
     [
-      "Timer".ljust(30, ' '),
+      "Timer".ljust(25, ' '),
       "Ends In".ljust(20, ' '),
-      "Percent".ljust(15, ' '),
+      "Percent".ljust(12, ' '),
       "Ends At"
     ].join("")
   ]
 
   ended_recently_message = [
     [
-      "Timer".ljust(30, ' '),
+      "Timer".ljust(25, ' '),
       "Ended At".ljust(20, ' '),
       "Ended"
     ].join("")
@@ -79,14 +79,14 @@ def build_timer_message_two(timers: nil)
 
         if ends_at > Time.now
           any_in_window = true
-          line += "#{truncated_timer_name}".ljust(30, ' ')
+          line += "#{truncated_timer_name}".ljust(25, ' ')
           line += "#{window_end}".ljust(20, ' ')
-          line += percentage.to_s.ljust(15, ' ')
+          line += percentage.to_s.ljust(12, ' ')
           line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
           in_window_message << line
         else
           any_ended_recently = true
-          line += "#{truncated_timer_name}".ljust(30, ' ')
+          line += "#{truncated_timer_name}".ljust(25, ' ')
           line += "#{window_end} ago".ljust(20, ' ')
           line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
           ended_recently_message << line
@@ -94,12 +94,12 @@ def build_timer_message_two(timers: nil)
       else
         line = ""
         any_mobs = true
-        line += "#{truncated_timer_name}".ljust(30, ' ')
+        line += "#{truncated_timer_name}".ljust(25, ' ')
         line += "#{window_start}".ljust(20, ' ')
         if !no_window_end && timer.display_window
-          line += timer.display_window.ljust(15, ' ')
+          line += timer.display_window.ljust(12, ' ')
         else
-          line += "".ljust(15, ' ')
+          line += "".ljust(12, ' ')
         end
         line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
         upcoming_message << line
