@@ -9,7 +9,7 @@ def build_timer_message_two(timers: nil)
     [
       "Timer".ljust(25, ' '),
       "In".ljust(20, ' '),
-      "Window".ljust(12, ' '),
+      "Window".ljust(10, ' '),
       "At"
     ].join("")
   ]
@@ -17,7 +17,7 @@ def build_timer_message_two(timers: nil)
     [
       "Timer".ljust(25, ' '),
       "Ends In".ljust(20, ' '),
-      "Percent".ljust(12, ' '),
+      "Percent".ljust(10, ' '),
       "Ends At"
     ].join("")
   ]
@@ -81,7 +81,7 @@ def build_timer_message_two(timers: nil)
           any_in_window = true
           line += "#{truncated_timer_name}".ljust(25, ' ')
           line += "#{window_end}".ljust(20, ' ')
-          line += percentage.to_s.ljust(12, ' ')
+          line += percentage.to_s.ljust(10, ' ')
           line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
           in_window_message << line
         else
@@ -97,9 +97,9 @@ def build_timer_message_two(timers: nil)
         line += "#{truncated_timer_name}".ljust(25, ' ')
         line += "#{window_start}".ljust(20, ' ')
         if !no_window_end && timer.display_window
-          line += timer.display_window.ljust(12, ' ')
+          line += timer.display_window.ljust(10, ' ')
         else
-          line += "".ljust(12, ' ')
+          line += "".ljust(10, ' ')
         end
         line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
         upcoming_message << line
