@@ -1,3 +1,8 @@
+COLUMN_1 = 30
+COLUMN_2 = 20
+COLUMN_3 = 15
+COLUMN_4 = 22
+
 def build_timer_message_two(timers: nil)
   any_in_window = false
   any_need_tod = false
@@ -7,26 +12,33 @@ def build_timer_message_two(timers: nil)
 
   upcoming_message = [
     [
-      "Timer".ljust(25, ' '),
-      "In".ljust(20, ' '),
-      "Window".ljust(10, ' '),
-      "At"
+      "`",
+      "Timer".ljust(COLUMN_1, ' '),
+      "In".ljust(COLUMN_2, ' '),
+      "Window".ljust(COLUMN_3, ' '),
+      "At".ljust(COLUMN_4, ' '),
+      "`"
     ].join("")
   ]
   in_window_message = [
     [
-      "Timer".ljust(25, ' '),
-      "Ends In".ljust(20, ' '),
-      "Percent".ljust(10, ' '),
-      "Ends At"
+      "`",
+      "Timer".ljust(COLUMN_1, ' '),
+      "Ends In".ljust(COLUMN_2, ' '),
+      "Percent".ljust(COLUMN_3, ' '),
+      "Ends At".ljust(COLUMN_4, ' '),
+      "`"
     ].join("")
   ]
 
   ended_recently_message = [
     [
-      "Timer".ljust(25, ' '),
-      "Ended At".ljust(20, ' '),
-      "Ended"
+      "`",
+      "Timer".ljust(COLUMN_1, ' '),
+      "Ended At".ljust(COLUMN_2, ' '),
+      "".ljust(COLUMN_3, ' '),
+      "Ended".ljust(COLUMN_4, ' '),
+      "`"
     ].join("")
   ]
 
@@ -59,7 +71,7 @@ def build_timer_message_two(timers: nil)
     end
 
     begin
-      truncated_timer_name = timer.name.to_s.truncate(29)
+      truncated_timer_name = timer.name.to_s.truncate(COLUMN_1 - 1)
 
       if timer.skip_count.to_i > 0
         truncated_timer_name = truncated_timer_name + ("*" * timer.skip_count.to_i)
@@ -79,30 +91,31 @@ def build_timer_message_two(timers: nil)
 
         if ends_at > Time.now
           any_in_window = true
-          line += "#{truncated_timer_name}".ljust(25, ' ')
-          line += "#{window_end}".ljust(20, ' ')
-          line += percentage.to_s.ljust(10, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
-          in_window_message << line
+          line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
+          line += "#{window_end}".ljust(COLUMN_2, ' ')
+          line += percentage.to_s.ljust(COLUMN_3, ' ')
+          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
+          in_window_message << "`#{line}`"
         else
           any_ended_recently = true
-          line += "#{truncated_timer_name}".ljust(25, ' ')
-          line += "#{window_end} ago".ljust(20, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
-          ended_recently_message << line
+          line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
+          line += "#{window_end} ago".ljust(COLUMN_2, ' ')
+          line += "".ljust(COLUMN_3, ' ')
+          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
+          ended_recently_message << "`#{line}`"
         end
       else
         line = ""
         any_mobs = true
-        line += "#{truncated_timer_name}".ljust(25, ' ')
-        line += "#{window_start}".ljust(20, ' ')
+        line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
+        line += "#{window_start}".ljust(COLUMN_2, ' ')
         if !no_window_end && timer.display_window
-          line += timer.display_window.ljust(10, ' ')
+          line += timer.display_window.ljust(COLUMN_3, ' ')
         else
-          line += "".ljust(10, ' ')
+          line += "".ljust(COLUMN_3, ' ')
         end
-        line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z")
-        upcoming_message << line
+        line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
+        upcoming_message << "`#{line}`"
       end
     rescue => ex
       puts ex
@@ -131,28 +144,25 @@ def build_timer_message_two(timers: nil)
 
   any_message = false
   if any_mobs
-    message << "\:dragon: __**Timers**__"
-    message << "```"
+    message << "\:dragon: __**Timers**__ (##CURRENT_CHAR_COUNT## / ##MAX_CHAR_COUNT##)"
     message << upcoming_message
-    message << "```"
+    message << "\n"
     any_message = true
   end
 
   if any_in_window
-    message << ""
+    message << "##SPLITPOINT##"
     message << "\:window: __**In Window**__"
-    message << "```"
     message << in_window_message
-    message << "```"
+    message << "\n"
     any_message = true
   end
 
   if any_ended_recently
-    message << ""
+    message << "##SPLITPOINT##"
     message << "\:clock: __**Ended Recently**__"
-    message << "```"
     message << ended_recently_message
-    message << "```"
+    message << "\n"
     any_message = true
   end
 
@@ -164,10 +174,10 @@ def build_timer_message_two(timers: nil)
   #end
 
   if !any_message
-    message << "```"
-    message << "There are no timers currently running."
-    message << "```"
+    message << "` `"
+    message << "`There are no timers currently running.`"
+    message << "` `"
   end
 
-  message.join("\n")
+  message.flatten
 end

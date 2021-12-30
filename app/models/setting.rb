@@ -15,4 +15,11 @@ class Setting < Sequel::Model
     s.save
     s
   end
+
+  def self.delete_by_key(key)
+    s = Setting.find(key: key)
+    if s
+      s.delete
+    end
+  end
 end

@@ -12,10 +12,25 @@ BOT.run(true)
 
 channel = BOT.channel(TIMER_CHANNEL_ID)
 
-timer_message_id = Setting.find_by_key("timer_message_id")
-if timer_message_id
-  @timers_message = channel.load_message(timer_message_id)
+@timer_messages = []
+
+MESSAGES_COUNT = 3
+MESSAGES_COUNT.times.each do |i|
+  timer_message_id = Setting.find_by_key("timer_message_#{i}_id")
+
+  timer_message = nil
+  if timer_message_id
+    timer_message = channel.load_message(timer_message_id)
+  end
+
+  if !timer_message
+    timer_message = BOT.send_message(TIMER_CHANNEL_ID, "` `")
+  end
+
+  @timer_messages << timer_message
+  Setting.save_by_key("timer_message_#{i}_id", timer_message.id)
 end
+
 update_timers_channel
 
 while true

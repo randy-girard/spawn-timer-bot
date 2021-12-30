@@ -1,6 +1,4 @@
 def build_timer_message(timers: nil)
-  return build_timer_message_two(timers: timers)
-
   any_in_window = false
   any_need_tod = false
   any_mobs = false

@@ -15,15 +15,16 @@ describe "MessageTwo" do
 
     output = build_timer_message_two(timers: timers)
 
-    expect(output).to eq(":dragon: __**Timers**__
-```
-Timer                         In                  Window         At
-window6                       18h                 1h             05/27 07:57:00 PM EDT
-window5                       18h                                05/27 07:57:00 PM EDT
-window2                       18h                 1h             05/27 07:57:00 PM EDT
-window1                       18h                                05/27 07:57:00 PM EDT
-window4                       17h                 3h             05/27 06:57:00 PM EDT
-window3                       17h                 2h             05/27 06:57:00 PM EDT
-```")
+    expect(output).to eq([
+      ":dragon: __**Timers**__ (##CURRENT_CHAR_COUNT## / ##MAX_CHAR_COUNT##)",
+      "`Timer                         In                  Window         At                    `",
+      "`window6                       18h                 1h             05/27 07:57:00 PM EDT `",
+      "`window5                       18h                                05/27 07:57:00 PM EDT `",
+      "`window2                       18h                 1h             05/27 07:57:00 PM EDT `",
+      "`window1                       18h                                05/27 07:57:00 PM EDT `",
+      "`window4                       17h                 3h             05/27 06:57:00 PM EDT `",
+      "`window3                       17h                 2h             05/27 06:57:00 PM EDT `",
+      "\n"
+    ])
   end
 end
