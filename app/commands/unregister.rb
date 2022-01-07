@@ -14,6 +14,7 @@ BOT.command(:unregister) do |event, *args|
   else
     mob = args.join(" ")
     mob.strip!
+    mob.gsub!("`", "'")
 
     timers, found_timer = find_timer_by_mob(mob)
 

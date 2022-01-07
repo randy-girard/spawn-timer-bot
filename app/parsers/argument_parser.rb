@@ -16,6 +16,8 @@ class ArgumentParser
     end
 
     mob.strip!
+    mob.gsub!("`", "'")
+    
     manual_tod.strip! if manual_tod
 
     return mob, manual_tod

@@ -15,6 +15,7 @@ BOT.command(:rename) do |event, *args|
   mob, new_mob = args.join(" ").split(/[\|\,]/)
   mob.strip!
   new_mob.strip!
+  new_mob.gsub!("`", "'")
 
   timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
   if timer

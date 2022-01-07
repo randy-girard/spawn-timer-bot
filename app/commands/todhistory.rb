@@ -14,6 +14,7 @@ BOT.command(:todhistory) do |event, *args|
 
   mob = args.join(" ")
   mob.strip!
+  mob.gsub!("`", "'")
 
   timers, found_timer = find_timer_by_mob(mob)
 
