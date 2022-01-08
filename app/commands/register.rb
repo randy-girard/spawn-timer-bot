@@ -49,7 +49,7 @@ def command_register(event, *args)
 
     timer = Timer.where(Sequel.ilike(:name, mob.to_s)).first
     timer ||= Timer.new
-    timer.name = mob.to_s.strip.gsub!("`", "'")
+    timer.name = mob.to_s.strip.gsub("`", "'")
     timer.window_start = window_start
     timer.window_end = window_end
     timer.variance = variance
