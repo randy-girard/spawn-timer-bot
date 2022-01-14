@@ -3,7 +3,7 @@ BOT.command(:timers) do |event|
     return
   end
 
-  timers = Timer.all.map(&:name).sort
+  timers = Timer.all.select {|t| t.name.to_s.length > 0 }.map(&:name).sort
 
   timers_string = if event.channel.type == 1
                     timers.join("\n")

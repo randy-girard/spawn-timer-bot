@@ -22,6 +22,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'rspec'
   gem 'timecop'
+  gem 'pry'
 end
 
 group :test do

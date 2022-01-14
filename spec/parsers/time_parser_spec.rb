@@ -17,7 +17,10 @@ describe TimeParser do
       expectation("10:57 pst",               "2021-05-27 01:57:00 -0400")
       expectation("10:58 pm pst",            "2021-05-27 01:58:00 -0400")
       expectation("10:58 pm est",            "2021-05-27 22:58:00 -0400")
+      expectation("10.58 pm est",            "2021-05-27 22:58:00 -0400")
       expectation("5/3 10:58 pm est",        "2021-05-03 22:58:00 -0400")
+      expectation("5:43 PM GMT",             "2021-05-27 13:43:00 -0400")
+      expectation("5:43 PM UTC",             "2021-05-27 13:43:00 -0400")
     end
   end
 
@@ -32,7 +35,10 @@ describe TimeParser do
       expectation("10:57 pst",           "2021-05-27 13:57:00 -0400")
       expectation("10:58 pm pst",        "2021-05-28 01:58:00 -0400")
       expectation("10:58 pm est",        "2021-05-27 22:58:00 -0400")
+      expectation("10.58 PM est",        "2021-05-27 22:58:00 -0400")
       expectation("5/3 10:58 pm est",    "2021-05-03 22:58:00 -0400")
+      expectation("5:43 PM GMT",         "2021-05-28 13:43:00 -0400")
+      expectation("5:43 PM UTC",         "2021-05-28 13:43:00 -0400")
     end
   end
 

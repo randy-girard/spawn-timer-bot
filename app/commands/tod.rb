@@ -51,6 +51,9 @@ def command_tod(event, *args)
     elsif !timer.has_window? && last_spawn && manual_tod && tod < last_spawn
       event.user.pm "Time of death is older than potential spawn timer. Please try again."
       event.message.create_reaction("⚠️")
+    elsif tod > Time.now
+      event.user.pm "Time of death unable to be recorded due to time in the future."
+      event.message.create_reaction("⚠️")
     else
       timer.last_tod = tod.to_f
       timer.alerted = nil

@@ -7,11 +7,14 @@ class TimeParser
     "PDT" => "Pacific Time (US & Canada)",
     "MDT" => "Mountain Time (US & Canada)",
     "CDT" => "Central Time (US & Canada)",
-    "EDT" => "Eastern Time (US & Canada)"
+    "EDT" => "Eastern Time (US & Canada)",
+    "GMT" => "GMT",
+    "UTC" => "UTC"
   }
 
   def self.parse(str)
     manual_tod = str.dup.upcase
+    manual_tod.gsub!(".", ":")
 
     begin
       time = nil
@@ -19,7 +22,7 @@ class TimeParser
       begin
         has_timezone = false
         TIMEZONES.each do |key , value|
-          if manual_tod.to_s.match?(key)
+          if manual_tod.to_s.match?(key.to_s.upcase)
             selected_timezone = value
             manual_tod.gsub!(/#{key}/, value)
             has_timezone = true
@@ -35,9 +38,9 @@ class TimeParser
 
       ampm = Chronic.parse(manual_tod, :context => :past, ambiguous_time_range: :none)
       has_ampm = manual_tod.match(/(AM|PM)/)
-      ampm_str = ampm.strftime("%p")
 
       if !time && ampm && !has_ampm
+        ampm_str = ampm.strftime("%p")
         if selected_timezone
           manual_tod.sub!("#{selected_timezone}", "#{ampm_str} #{selected_timezone}")
         else
