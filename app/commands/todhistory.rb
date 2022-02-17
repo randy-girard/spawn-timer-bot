@@ -19,8 +19,7 @@ BOT.command(:todhistory) do |event, *args|
   timers, found_timer = find_timer_by_mob(mob)
 
   if timers.size > 1 && !found_timer
-    event.user.pm "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
-    event.message.create_reaction("⚠️")
+    multiple_result_response(event, timers)
   elsif found_timer || timers.size == 1
     output = []
     timer = found_timer || timers[0]

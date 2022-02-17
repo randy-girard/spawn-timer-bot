@@ -24,7 +24,7 @@ BOT.command(:show) do |event, *args|
   timers, found_timer = find_timer_by_mob(mob)
 
   if timers.size > 1 && !found_timer
-    event.respond "Request returned multiple results: #{timers.map {|timer| "`#{timer.name}`" }.join(", ")}. Please be more specific."
+    multiple_result_response(event, timers)
   elsif found_timer || timers.size == 1
     msg = build_show_message(found_timer || timers[0])
     event.respond(msg)

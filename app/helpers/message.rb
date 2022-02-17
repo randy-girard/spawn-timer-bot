@@ -23,3 +23,19 @@ def build_show_message(timer)
   event << "```"
   event.join("\n")
 end
+
+def multiple_result_response(event, timers)
+  timers_message = []
+  timers.each do |timer|
+    timers_message << "`timer.name`"
+  end
+
+  out_message = ["Request returned multiple results, please be more specific:"]
+  out_message << ""
+  timers.each do |timer|
+    out_message << "`#{timer.name}`"
+  end
+
+  event.user.pm(out_message.join("\n"))
+  event.message.create_reaction("⚠️")
+end
