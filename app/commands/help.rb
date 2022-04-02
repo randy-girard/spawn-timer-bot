@@ -1,5 +1,5 @@
 BOT.command(:help) do |event|
-  if !(event.channel.id == COMMAND_CHANNEL_ID || event.channel.type == 1)
+  if event.channel.id != COMMAND_CHANNEL_ID || event.channel.type != 1
     return
   end
 
@@ -17,6 +17,8 @@ BOT.command(:help) do |event|
   output << "!rename      - Renames an existing timer."
   output << "!tod         - Record a time of death for a registered timer."
   output << "!todremove   - Remove a time of death for a registered timer."
+  #output << "!link        - Links timer to another timer to auto TOD on the other timers TOD."
+  #output << "!unlink      - Removes the timer that this timer is linked to."
   output << "!todhistory  - Show last 10 TODs recorded for a registered timer."
   output << "!skip        - Record a skipped spawn for a registered timer."
   output << "!unskip      - Removes the last skip for a registered timer."
