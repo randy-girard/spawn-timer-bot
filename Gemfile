@@ -19,6 +19,7 @@ gem 'sequel'
 gem 'activesupport'
 gem 'require_all'
 gem 'dates_from_string'
+gem 'sinatra'
 
 group :development, :test do
   gem 'sqlite3'
