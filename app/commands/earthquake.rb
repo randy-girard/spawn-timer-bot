@@ -11,7 +11,7 @@ BOT.command(:earthquake) do |event|
   update_timers_channel
   event.respond "Earthquake has been registered!"
   BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**EARTHQUAKE**")
-  if defined? EARTHQUAKE_ALERT_CHANNEL_ID
+  if defined? (EARTHQUAKE_ALERT_CHANNEL_ID) && EARTHQUAKE_ALERT_CHANNEL_ID.to_s.strip.length > 0
     BOT.send_message(EARTHQUAKE_ALERT_CHANNEL_ID, "@raiders **EARTHQUAKE** **EARTHQUAKE** **EARTHQUAKE**")
   end
 end
