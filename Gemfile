@@ -9,7 +9,8 @@ end
 gem "rake"
 gem "foreman"
 gem "dotenv"
-gem 'discordrb'
+gem 'discordrb', github: "shardlab/discordrb", branch: "main"
+gem 'discordrb-webhooks'
 gem 'chronic'
 gem 'chronic_duration'
 gem 'dotiw'

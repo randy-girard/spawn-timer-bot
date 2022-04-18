@@ -1,3 +1,17 @@
+GIT
+  remote: https://github.com/shardlab/discordrb.git
+  revision: 77080de8c11a0e102833c24a90afbb532557aff4
+  branch: main
+  specs:
+    discordrb (3.4.2)
+      discordrb-webhooks (~> 3.4.2)
+      ffi (>= 1.9.24)
+      opus-ruby
+      rest-client (>= 2.0.0)
+      websocket-client-simple (>= 0.3.0)
+    discordrb-webhooks (3.4.2)
+      rest-client (>= 2.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -17,14 +31,6 @@ GEM
       database_cleaner-core (~> 2.0.0)
       sequel
     diff-lcs (1.4.4)
-    discordrb (3.4.0)
-      discordrb-webhooks (~> 3.3.0)
-      ffi (>= 1.9.24)
-      opus-ruby
-      rest-client (>= 2.0.0)
-      websocket-client-simple (>= 0.3.0)
-    discordrb-webhooks (3.3.0)
-      rest-client (>= 2.1.0.rc1)
     domain_name (0.5.20190701)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.6)
@@ -32,7 +38,7 @@ GEM
       activesupport
       i18n
     event_emitter (0.2.6)
-    ffi (1.15.4)
+    ffi (1.15.5)
     foreman (0.87.2)
     http-accept (1.7.0)
     http-cookie (1.0.4)
@@ -42,7 +48,7 @@ GEM
     method_source (1.0.0)
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2021.1115)
+    mime-types-data (3.2022.0105)
     minitest (5.14.4)
     netrc (0.11.0)
     numerizer (0.1.1)
@@ -79,9 +85,9 @@ GEM
       concurrent-ruby (~> 1.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.8)
+    unf_ext (0.0.8.1)
     websocket (1.2.9)
-    websocket-client-simple (0.3.0)
+    websocket-client-simple (0.5.1)
       event_emitter
       websocket
     zeitwerk (2.5.1)
@@ -94,7 +100,8 @@ DEPENDENCIES
   chronic
   chronic_duration
   database_cleaner-sequel
-  discordrb
+  discordrb!
+  discordrb-webhooks
   dotenv
   dotiw
   foreman
