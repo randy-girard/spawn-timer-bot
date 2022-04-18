@@ -38,6 +38,20 @@ while true
               BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
             else
               BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** timer is up!")
+
+              if timer.auto_tod == true
+                timer.last_tod = this_run_time.to_f
+                timer.alerted = nil
+                timer.alerting_soon = false
+                timer.skip_count = 0
+                timer.save
+
+                todrecord = Tod.new
+                todrecord.timer_id = timer.id
+                todrecord.tod = this_run_time.to_f
+                todrecord.created_at = Time.now
+                todrecord.save
+              end
             end
             timer.alerted = true
             save_timer = true
