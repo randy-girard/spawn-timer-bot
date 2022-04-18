@@ -37,7 +37,7 @@ class Timer < Sequel::Model
     _variance
   end
 
-  def display_window
+  def display_window(format: :short)
     duration = nil
 
     parsed_variance = if variance
@@ -61,7 +61,7 @@ class Timer < Sequel::Model
     end
 
     if duration
-      ChronicDuration.output(duration, :format => :short)
+      ChronicDuration.output(duration, :format => format)
     else
       nil
     end

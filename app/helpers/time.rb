@@ -46,6 +46,8 @@ def next_spawn_time_start(mob, last_tod: nil, timer: nil)
 
     if variance
       tod + ChronicDuration.parse(timer.window_start) - variance
+    elsif timer.window_start.to_i == 0
+      tod
     else
       tod + ChronicDuration.parse(timer.window_start)
     end
@@ -55,19 +57,23 @@ def next_spawn_time_start(mob, last_tod: nil, timer: nil)
 end
 
 
-def last_spawn_time_start(mob, timer: nil)
+def last_spawn_time_start(mob, last_tod: nil, timer: nil)
   timers, found_timer = find_timer_by_mob(mob, timer: timer)
   timer = found_timer || timers[0]
 
   if timer
+    tod = Time.at(last_tod || timer.last_tod)
+
     variance = if timer.variance
       ChronicDuration.parse(timer.variance)
     end
 
     if variance
-      Time.now - ChronicDuration.parse(timer.window_start) - variance
+      tod - ChronicDuration.parse(timer.window_start) - variance
+    elsif timer.window_start.to_i == 0
+      tod
     else
-      Time.now - ChronicDuration.parse(timer.window_start)
+      tod - ChronicDuration.parse(timer.window_start)
     end
   end
 end

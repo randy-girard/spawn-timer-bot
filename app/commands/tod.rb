@@ -39,7 +39,7 @@ def command_tod(event, *args)
   elsif found_timer || timers.size == 1
     timer = found_timer || timers[0]
 
-    last_spawn = last_spawn_time_start(mob)
+    last_spawn = last_spawn_time_start(mob, last_tod: tod)
 
     next_spawn_start_with_tod = next_spawn_time_start(mob, last_tod: tod)
     next_spawn_end_with_tod = next_spawn_time_end(mob, last_tod: tod)
