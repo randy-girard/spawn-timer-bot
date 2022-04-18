@@ -14,55 +14,39 @@ channel = BOT.channel(TIMER_CHANNEL_ID)
 
 @timer_messages = []
 
-MESSAGES_COUNT = 3
-MESSAGES_COUNT.times.each do |i|
-  timer_message_id = Setting.find_by_key("timer_message_#{i}_id")
-
-  timer_message = nil
-  if timer_message_id
-    timer_message = channel.load_message(timer_message_id)
-  end
-
-  if !timer_message
-    timer_message = BOT.send_message(TIMER_CHANNEL_ID, "` `")
-  end
-
-  @timer_messages << timer_message
-  Setting.save_by_key("timer_message_#{i}_id", timer_message.id)
-end
-
-update_timers_channel
+everyone_alert = USE_EVERYONE_ALERT ? "@everyone " : ""
+send_timer_channel_update = true
 
 while true
   begin
+    this_run_time = Time.now
     timers = nil
-    send_timer_channel_update = false
 
     if UPDATE_TIMERS_CHANNEL && timer_update?(:timer)
       timers ||= Timer.all
       send_timer_channel_update = true
     end
 
-
     if UPDATE_TIMERS_ALERT_CHANNEL && timer_update?(:timer_alert)
       timers ||= Timer.all
       timers.each do |timer|
         save_timer = false
         if !timer.alerted
+          next_spawn = next_spawn_time_end(timer.name, timer: timer)
           if in_window(timer.name, timer: timer)
             if timer.window_end || timer.variance
-              next_spawn = next_spawn_time_end(timer.name, timer: timer)
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
+              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
             else
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**#{timer.name}** timer is up!")
+              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** timer is up!")
             end
             timer.alerted = true
             save_timer = true
           elsif alerting_soon(timer.name, timer: timer) && !timer.alerting_soon
+
             if timer.window_end || timer.variance
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**#{timer.name}** will be in window in an hour!")
+              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** will be in window in #{display_time_distance(next_spawn_time_start(timer.name))}!")
             else
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**#{timer.name}** is up in one hour!")
+              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is up in #{display_time_distance(next_spawn_time_start(timer.name))}!")
             end
             timer.alerting_soon = true
             save_timer = true
@@ -89,6 +73,7 @@ while true
 
   if send_timer_channel_update
     update_timers_channel(timers: timers)
+    send_timer_channel_update = false
   end
 
   sleep 1

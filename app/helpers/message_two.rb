@@ -11,7 +11,6 @@ def build_timer_message_two(timers: nil)
       "Timer".ljust(COLUMN_1, ' '),
       "In".ljust(COLUMN_2, ' '),
       "Window".ljust(COLUMN_3, ' '),
-      "At".ljust(COLUMN_4, ' '),
       "`"
     ].join("")
   ]
@@ -21,7 +20,6 @@ def build_timer_message_two(timers: nil)
       "Timer".ljust(COLUMN_1, ' '),
       "Ends In".ljust(COLUMN_2, ' '),
       "Percent".ljust(COLUMN_3, ' '),
-      "Ends At".ljust(COLUMN_4, ' '),
       "`"
     ].join("")
   ]
@@ -30,9 +28,8 @@ def build_timer_message_two(timers: nil)
     [
       "`",
       "Timer".ljust(COLUMN_1, ' '),
-      "Ended At".ljust(COLUMN_2, ' '),
+      "Ended".ljust(COLUMN_2, ' '),
       "".ljust(COLUMN_3, ' '),
-      "Ended".ljust(COLUMN_4, ' '),
       "`"
     ].join("")
   ]
@@ -90,14 +87,12 @@ def build_timer_message_two(timers: nil)
           line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
           line += "#{window_end}".ljust(COLUMN_2, ' ')
           line += percentage.to_s.ljust(COLUMN_3, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
           in_window_message << "`#{line}`"
         else
           any_ended_recently = true
           line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
           line += "#{window_end} ago".ljust(COLUMN_2, ' ')
           line += "".ljust(COLUMN_3, ' ')
-          line += ends_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
           ended_recently_message << "`#{line}`"
         end
       else
@@ -110,7 +105,6 @@ def build_timer_message_two(timers: nil)
         else
           line += "".ljust(COLUMN_3, ' ')
         end
-        line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
         upcoming_message << "`#{line}`"
       end
     rescue => ex
@@ -119,24 +113,9 @@ def build_timer_message_two(timers: nil)
     end
   end
 
-  # tods = Tod.group_and_count(:user_id)
-  #           .all
-  #           .sort_by {|tod| tod[:count] }
-  #           .reverse[0..4]
-  # if tods.size > 0
-  #   users = Tod.order(Sequel.lit("created_at DESC"))
-  #              .select_hash(:user_id, :display_name)
-  #   message << "\:trophy: __**Leaderboard (Top 5)**__"
-  #   message << '```'
-  #   message << "Rank  #{"Name".ljust(30, ' ')}Count"
-  #   tods.each_with_index do |tod, index|
-  #     username = users[tod[:user_id]].to_s.truncate(29)
-  #     username = clean_username(username)
-  #     message << "#{(index + 1).to_s.rjust(4, ' ')}  #{username.ljust(30, ' ')}#{tod[:count]}"
-  #   end
-  #   message << '```'
-  #   message << ""
-  # end
+  client = Discordrb::Webhooks::Client.new(url: TIMER_CHANNEL_WEBHOOK_URL)
+  builder = Discordrb::Webhooks::Builder.new
+  builder.content = ""
 
   any_message = false
   if any_mobs
@@ -144,6 +123,12 @@ def build_timer_message_two(timers: nil)
     message << upcoming_message
     message << "\n"
     any_message = true
+
+    builder.add_embed do |embed|
+      embed.color = 3447003
+      embed.title = "\:dragon: __**Timers**__"
+      embed.description = upcoming_message.join("\n")
+    end
   end
 
   if any_in_window
@@ -152,6 +137,12 @@ def build_timer_message_two(timers: nil)
     message << in_window_message
     message << "\n"
     any_message = true
+    builder.add_embed do |embed|
+      embed.color = 15105570
+      embed.title = "\:window: __**In Window**__"
+      embed.description = in_window_message.join("\n")
+      embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: "Last updated today at #{Time.now.strftime("%I:%M:%S %p")}")
+    end
   end
 
   if any_ended_recently
@@ -160,69 +151,40 @@ def build_timer_message_two(timers: nil)
     message << ended_recently_message
     message << "\n"
     any_message = true
+    builder.add_embed do |embed|
+      embed.color = 3066993
+      embed.title = "\:clock: __**Ended Recently**__"
+      embed.description = ended_recently_message.join("\n")
+    end
   end
-
-  #if any_need_tod
-  #  message << ""
-  #  message << "\:warning: __**Missing Timers**__"
-  #  message << ""
-  #  message << need_tod_message.sort.join(", ")
-  #end
 
   if !any_message
     message << "` `"
     message << "`There are no timers currently running.`"
     message << "` `"
-  end
-
-  messages = message.flatten
-
-  num_updated = 0
-  char_count = 0
-  current_char_count = messages.flatten.join("\n").length
-
-  messages_count = MESSAGES_COUNT
-  if current_char_count < 1800
-    messages_count = 1
-  end
-
-  message_parts = messages.flatten.join("\n").split("##SPLITPOINT##")
-  use_parts = message_parts.all? {|part| part.to_s.length < 2000 }
-
-  message_groups = if use_parts
-                     message_parts.map {|m| m.split("\n") }
-                   else
-                     messages.in_groups(messages_count)
-                   end
-
-
-  message_groups.each_with_index do |message_array, index|
-    timer_message = @timer_messages[index]
-
-    message = message_array.reject {|m| m == "##SPLITPOINT##" }.join("\n")
-
-    message = "` `\n" + message
-
-    message.gsub!("##CURRENT_CHAR_COUNT##", current_char_count.to_s)
-    message.gsub!("##MAX_CHAR_COUNT##", "#{MESSAGES_COUNT * 2_000}")
-
-    if message.to_s.length > 0
-      if timer_message
-        begin
-          timer_message.edit(message.to_s)
-        rescue => ex
-          puts ex.message
-          puts ex.backtrace.join("\n")
-        end
-      end
-    else
-      timer_message.edit("` `")
+    builder.add_embed do |embed|
+      embed.title = "`There are no timers currently running.`"
     end
-    num_updated += 1
   end
 
-  (num_updated..(MESSAGES_COUNT - 1)).each do |index|
-    timer_message = @timer_messages[index]
-    timer_message.edit("` `")
+  webhook_message_id = Setting.find_by_key("webhook_message_id")
+  if webhook_message_id == nil
+    result = client.execute(builder, true)
+    response = JSON.parse(result.body)
+    webhook_message_id = response["id"]
+    Setting.save_by_key("webhook_message_id", webhook_message_id)
+  else
+    begin
+      client.edit_message(webhook_message_id, builder: builder)
+    rescue => ex
+      puts ex.inspect
+      puts ex.backtrace.inspect
+      if ex.message =~ /404 Not Found/
+        result = client.execute(builder, true)
+        response = JSON.parse(result.body)
+        webhook_message_id = response["id"]
+        Setting.save_by_key("webhook_message_id", webhook_message_id)
+      end
+    end
   end
 end
