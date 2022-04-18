@@ -1,5 +1,5 @@
 BOT.command(:timers) do |event|
-  if event.channel.id != COMMAND_CHANNEL_ID
+  if event.channel.id != COMMAND_CHANNEL_ID || event.channel.type == 1
     return
   end
 
@@ -8,7 +8,7 @@ BOT.command(:timers) do |event|
   timers_string = if event.channel.type == 1
                     timers.join("\n")
                   else
-                    timers.join(", ")
+                    timers.join(", ").truncate(1950, omission: "...")
                   end
 
   event << "```"
