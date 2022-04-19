@@ -95,9 +95,9 @@ def build_timer_message_three(timers: nil)
   builder = Discordrb::Webhooks::Builder.new
   builder.content = ""
   builder.add_embed do |embed|
-    embed.title = "Mobs In Window"
+    embed.title = any_in_window ? "Mobs In Window" : "Nothing Currently in Window"
     embed.fields = mobs_in_window
-    embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
+    embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: any_in_window ? "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}" : "There is currently nothing in window! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
   end
   builder.add_embed do |embed|
     embed.title = "Mobs Entering Window In The Next 24 Hours"
