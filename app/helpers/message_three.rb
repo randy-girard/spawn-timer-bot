@@ -1,6 +1,7 @@
 require 'discordrb/webhooks'
 
 def build_timer_message_three(timers: nil)
+  any_in_window = false
   mobs_in_window = []
   upcoming_window = []
 
