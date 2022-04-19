@@ -30,6 +30,7 @@ while true
     if UPDATE_TIMERS_ALERT_CHANNEL && timer_update?(:timer_alert)
       timers ||= Timer.all
       timers.each do |timer|
+        can_auto_tod = false
         save_timer = false
         if !timer.alerted
           next_spawn = next_spawn_time_end(timer.name, timer: timer)
@@ -38,20 +39,7 @@ while true
               BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
             else
               BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** timer is up!")
-
-              if timer.auto_tod == true
-                timer.last_tod = this_run_time.to_f
-                timer.alerted = nil
-                timer.alerting_soon = false
-                timer.skip_count = 0
-                timer.save
-
-                todrecord = Tod.new
-                todrecord.timer_id = timer.id
-                todrecord.tod = this_run_time.to_f
-                todrecord.created_at = Time.now
-                todrecord.save
-              end
+              can_auto_tod = true
             end
             timer.alerted = true
             save_timer = true
@@ -75,8 +63,23 @@ while true
         end
 
         if save_timer
+          if can_auto_tod && timer.auto_tod == true
+            timer.last_tod = this_run_time.to_f
+            timer.alerted = nil
+            timer.alerting_soon = false
+            timer.skip_count = 0
+
+            todrecord = Tod.new
+            todrecord.timer_id = timer.id
+            todrecord.tod = this_run_time.to_f
+            todrecord.created_at = Time.now
+            todrecord.save
+          end
+
           timer.save_changes
+
           send_timer_channel_update = true
+          can_auto_tod = false
         end
       end
     end
