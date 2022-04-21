@@ -3,12 +3,13 @@ def command_tod(event, *args)
 
   if args.size == 0
     event << "```"
-    event << "!tod [mob name] (|time of death) "
+    event << "!tod [mob name] (|time of death(#skip count)) "
     event << ""
     event << "Examples:"
     event << ""
     event << "!tod Faydedar"
     event << "!tod Faydedar|10 hours ago"
+    event << "!tod Faydedar|30 hours ago#2"
     event << "!tod Faydedar 10 hours ago"
     event << "!tod Faydedar, 10 hours ago"
     event << "!tod Faydedar|last thursday at 9pm"
@@ -19,6 +20,7 @@ def command_tod(event, *args)
   end
 
   mob, manual_tod = ArgumentParser.parse(args.join(" "))
+  manual_tod, skip_count = manual_tod.to_s.split("#")
 
   tod = if manual_tod.to_s.length > 0
     TimeParser.parse(manual_tod.to_s)
@@ -39,6 +41,13 @@ def command_tod(event, *args)
   elsif found_timer || timers.size == 1
     timer = found_timer || timers[0]
 
+    if skip_count.to_i > 0
+      timer.skip_count = skip_count.to_i
+      timer.save
+    else
+      timer.skip_count = 0
+    end
+
     last_spawn = last_spawn_time_start(mob, last_tod: tod)
 
     next_spawn_start_with_tod = next_spawn_time_start(mob, last_tod: tod)
@@ -57,7 +66,6 @@ def command_tod(event, *args)
       timer.last_tod = tod.to_f
       timer.alerted = nil
       timer.alerting_soon = false
-      timer.skip_count = 0
       timer.save
 
       todrecord = Tod.new

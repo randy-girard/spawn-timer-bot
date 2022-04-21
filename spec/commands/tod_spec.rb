@@ -161,4 +161,49 @@ describe "TodCommand" do
     }.by(1)
   end
 
+  it "should record tod with skips" do
+    window_timer = Timer.create(name: "window", last_tod: Time.now.to_i, window_start: "18 hours", variance: "1 hour", skip_count: 0)
+
+    user = double("User")
+    expect(user).to receive(:id) { 1 }
+    expect(user).to receive(:name) { "Username" }
+    expect(user).to receive(:display_name) { "Display Name" }
+    expect(user).to receive(:pm).with("Time of death for **window** recorded as Wednesday, May 26 at 03:57:00 PM EDT!")
+
+    channel = double("Channel")
+    expect(channel).to receive(:id) { COMMAND_CHANNEL_ID }
+
+    message = double("Message")
+    expect(message).to receive(:create_reaction).with("✅")
+
+    event = double("Event")
+    expect(event).to receive(:channel) { channel }
+    allow(event).to receive(:user) { user }
+    expect(event).to receive(:message) { message }
+
+    starts_at = next_spawn_time_start(Timer.last.name)
+    ends_at = next_spawn_time_end(Timer.last.name)
+    window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
+    window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
+
+    expect(window_start).to eq("17h")
+    expect(window_end).to eq("19h")
+
+    Timecop.travel(Time.local(2021, 5, 28, 15, 57, 0))
+
+    expect {
+      command_tod(event, ["window|2 days ago#2"])
+    }.to change {
+      Timer.last.display_window
+    }.from("2h").to("6h")
+
+    starts_at = next_spawn_time_start(Timer.last.name)
+    ends_at = next_spawn_time_end(Timer.last.name)
+    window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
+    window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ", compact: true)
+
+    expect(window_start).to eq("2h 59m 59s")
+    expect(window_end).to eq("8h 59m 59s")
+  end
+
 end
