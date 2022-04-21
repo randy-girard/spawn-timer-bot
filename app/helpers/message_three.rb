@@ -4,6 +4,7 @@ def build_timer_message_three(timers: nil)
   any_in_window = false
   mobs_in_window = []
   upcoming_window = []
+  number_of_blocks = 20
 
 
   timers ||= Timer.all
@@ -45,9 +46,9 @@ def build_timer_message_three(timers: nil)
 
         if ends_at > Time.now
           perc = (((Time.now - starts_at) / (ends_at - starts_at)))
-          num = (16 * perc).round(0)
+          num = (number_of_blocks * perc).round(0)
           out = "Remaining window: #{display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")}\n"
-          16.times do |i|
+          number_of_blocks.times do |i|
             if i >= num
               out += "⬜"
             else
