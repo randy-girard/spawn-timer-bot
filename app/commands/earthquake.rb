@@ -12,6 +12,7 @@ BOT.command(:earthquake) do |event|
   event.respond "Earthquake has been registered!"
   BOT.send_message(TIMER_ALERT_CHANNEL_ID, "**EARTHQUAKE**")
   if defined? (EARTHQUAKE_ALERT_CHANNEL_ID) && EARTHQUAKE_ALERT_CHANNEL_ID.to_s.strip.length > 0
-    BOT.send_message(EARTHQUAKE_ALERT_CHANNEL_ID, "@raiders **EARTHQUAKE** **EARTHQUAKE** **EARTHQUAKE**")
+    # earthquake alert channel is defined, so send the optional EARTHQUAKE_ALERT_MESSAGE if defined, otherwise send the default
+    BOT.send_message(EARTHQUAKE_ALERT_CHANNEL_ID, EARTHQUAKE_ALERT_MESSAGE.empty? ? "EARTHQUAKE" : EARTHQUAKE_ALERT_MESSAGE)
   end
 end
