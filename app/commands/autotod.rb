@@ -7,11 +7,11 @@ BOT.command(:autotod) do |event, *args|
 
   if args.size == 0
     output << "```"
-    output << "!auto_tod [mob name]"
+    output << "!autotod [mob name]"
     output << ""
     output << "Examples:"
     output << ""
-    output << "!auto_tod Faydedar"
+    output << "!autotod Faydedar"
     output << "```"
     event.respond(output.join("\n"))
     return
