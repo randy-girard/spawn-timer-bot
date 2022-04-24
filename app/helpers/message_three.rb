@@ -102,41 +102,51 @@ def build_timer_message_three(timers: nil)
   client = Discordrb::Webhooks::Client.new(url: TIMER_CHANNEL_WEBHOOK_URL)
   builder = Discordrb::Webhooks::Builder.new
   builder.content = ""
-  if SHOW_FUTURE_WINDOW && future_window.size > 0
-    builder.add_embed do |embed|
-      embed.title = "Future Windows"
-      embed.fields = future_window
-    end
-  end
-  builder.add_embed do |embed|
-    embed.color = 3447003
-    embed.title = "Mobs Entering Window In The Next 24 Hours"
-    embed.fields = upcoming_window
-  end
   builder.add_embed do |embed|
     embed.color = any_in_window ? 15105570 : 3066993
     embed.title = any_in_window ? "Mobs In Window" : "Nothing Currently in Window"
     embed.fields = mobs_in_window
     embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: any_in_window ? "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}" : "There is currently nothing in window! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
   end
-
-  webhook_message_id = Setting.find_by_key("webhook_message_id")
-
-  if webhook_message_id == nil
-    result = client.execute(builder, true)
-    response = JSON.parse(result.body)
-    webhook_message_id = response["id"]
-    Setting.save_by_key("webhook_message_id", webhook_message_id)
-  else
-    begin
-      client.edit_message(webhook_message_id, builder: builder)
-    rescue => ex
-      if ex.message =~ /404 Not Found/
-        result = client.execute(builder, true)
-        response = JSON.parse(result.body)
-        webhook_message_id = response["id"]
-        Setting.save_by_key("webhook_message_id", webhook_message_id)
-      end
+  builder.add_embed do |embed|
+    embed.color = 3447003
+    embed.title = "Mobs Entering Window In The Next 24 Hours"
+    embed.fields = upcoming_window
+  end
+  if SHOW_FUTURE_WINDOW && future_window.size > 0
+    builder.add_embed do |embed|
+      embed.title = "Future Windows"
+      embed.fields = future_window
     end
   end
+  webhook_message_id = Setting.find_by_key("webhook_message_id")
+
+  if webhook_message_id
+    channel = BOT.channel(TIMER_CHANNEL_ID)
+    channel.delete_message(webhook_message_id)
+  end
+
+  result = client.execute(builder, true)
+  response = JSON.parse(result.body)
+  webhook_message_id = response["id"]
+  Setting.save_by_key("webhook_message_id", webhook_message_id)
+
+
+  # if webhook_message_id == nil
+  #   result = client.execute(builder, true)
+  #   response = JSON.parse(result.body)
+  #   webhook_message_id = response["id"]
+  #   Setting.save_by_key("webhook_message_id", webhook_message_id)
+  # else
+  #   begin
+  #     client.edit_message(webhook_message_id, builder: builder)
+  #   rescue => ex
+  #     if ex.message =~ /404 Not Found/
+  #       result = client.execute(builder, true)
+  #       response = JSON.parse(result.body)
+  #       webhook_message_id = response["id"]
+  #       Setting.save_by_key("webhook_message_id", webhook_message_id)
+  #     end
+  #   end
+  # end
 end
