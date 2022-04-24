@@ -5,7 +5,7 @@ def build_timer_message_three(timers: nil)
   mobs_in_window = []
   upcoming_window = []
   future_window = []
-  number_of_blocks = 20
+  number_of_blocks = 16
 
 
   timers ||= Timer.all
