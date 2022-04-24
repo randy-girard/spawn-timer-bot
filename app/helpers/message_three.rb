@@ -58,10 +58,13 @@ def build_timer_message_three(timers: nil)
           end
           any_in_window = true
 
-          mobs_in_window << Discordrb::Webhooks::EmbedField.new(
-            name: "#{timer.name} (#{timer.display_window(format: :long)})",
-            value: out
-          )
+          mobs_in_window << {
+            message: Discordrb::Webhooks::EmbedField.new(
+              name: "#{timer.name} (#{timer.display_window(format: :long)})",
+              value: out
+            ),
+            percent: perc
+          }
         else
           #any_ended_recently = true
           #line += "#{truncated_timer_name}".ljust(COLUMN_1, ' ')
@@ -98,6 +101,7 @@ def build_timer_message_three(timers: nil)
     end
   end
 
+  mobs_in_window = mobs_in_window.sort_by {|m| m[:percent] }
 
   client = Discordrb::Webhooks::Client.new(url: TIMER_CHANNEL_WEBHOOK_URL)
   builder = Discordrb::Webhooks::Builder.new
@@ -105,7 +109,7 @@ def build_timer_message_three(timers: nil)
   builder.add_embed do |embed|
     embed.color = any_in_window ? 15105570 : 3066993
     embed.title = any_in_window ? "Mobs In Window" : "Nothing Currently in Window"
-    embed.fields = mobs_in_window
+    embed.fields = mobs_in_window.map {|m| m[:message] }
     embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: any_in_window ? "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}" : "There is currently nothing in window! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
   end
   builder.add_embed do |embed|
