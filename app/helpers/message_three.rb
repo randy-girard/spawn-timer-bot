@@ -101,7 +101,7 @@ def build_timer_message_three(timers: nil)
     end
   end
 
-  mobs_in_window = mobs_in_window.sort_by {|m| m[:percent] }
+  mobs_in_window = mobs_in_window.sort_by {|m| -(m[:percent].to_f) }
 
   client = Discordrb::Webhooks::Client.new(url: TIMER_CHANNEL_WEBHOOK_URL)
   builder = Discordrb::Webhooks::Builder.new
