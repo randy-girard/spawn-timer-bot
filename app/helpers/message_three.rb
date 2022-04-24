@@ -9,7 +9,7 @@ def build_timer_message_three(timers: nil)
 
 
   timers ||= Timer.all
-  timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.reverse.each do |timer|
+  timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.each do |timer|
     window_start = ""
     starts_at = ""
     ends_at = ""
@@ -119,8 +119,8 @@ def build_timer_message_three(timers: nil)
       embed.fields = future_window
     end
   end
-  webhook_message_id = Setting.find_by_key("webhook_message_id")
 
+  webhook_message_id = Setting.find_by_key("webhook_message_id")
   if webhook_message_id
     begin
       channel = BOT.channel(TIMER_CHANNEL_ID)
