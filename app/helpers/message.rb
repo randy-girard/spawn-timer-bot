@@ -20,6 +20,7 @@ def build_show_message(timer)
   end
   event << "Alerted: #{timer.alerted}"
   event << "Alerting Soon: #{timer.alerting_soon}"
+  event << "Autotod: #{timer.auto_tod ? "Enabled" : "Disabled"}"
   event << "```"
   event.join("\n")
 end
