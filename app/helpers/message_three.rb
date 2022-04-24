@@ -9,7 +9,7 @@ def build_timer_message_three(timers: nil)
 
 
   timers ||= Timer.all
-  timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.each do |timer|
+  timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.reverse.each do |timer|
     window_start = ""
     starts_at = ""
     ends_at = ""
@@ -102,22 +102,22 @@ def build_timer_message_three(timers: nil)
   client = Discordrb::Webhooks::Client.new(url: TIMER_CHANNEL_WEBHOOK_URL)
   builder = Discordrb::Webhooks::Builder.new
   builder.content = ""
-  builder.add_embed do |embed|
-    embed.color = any_in_window ? 15105570 : 3066993
-    embed.title = any_in_window ? "Mobs In Window" : "Nothing Currently in Window"
-    embed.fields = mobs_in_window
-    embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: any_in_window ? "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}" : "There is currently nothing in window! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
+  if SHOW_FUTURE_WINDOW && future_window.size > 0
+    builder.add_embed do |embed|
+      embed.title = "Future Windows"
+      embed.fields = future_window
+    end
   end
   builder.add_embed do |embed|
     embed.color = 3447003
     embed.title = "Mobs Entering Window In The Next 24 Hours"
     embed.fields = upcoming_window
   end
-  if SHOW_FUTURE_WINDOW && future_window.size > 0
-    builder.add_embed do |embed|
-      embed.title = "Future Windows"
-      embed.fields = future_window
-    end
+  builder.add_embed do |embed|
+    embed.color = any_in_window ? 15105570 : 3066993
+    embed.title = any_in_window ? "Mobs In Window" : "Nothing Currently in Window"
+    embed.fields = mobs_in_window
+    embed.footer =  Discordrb::Webhooks::EmbedFooter.new(text: any_in_window ? "These are currently in window! Be prepared! • Today at #{Time.now.strftime("%I:%M:%S %p")}" : "There is currently nothing in window! • Today at #{Time.now.strftime("%I:%M:%S %p")}")
   end
 
   webhook_message_id = Setting.find_by_key("webhook_message_id")
