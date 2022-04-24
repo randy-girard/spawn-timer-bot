@@ -122,8 +122,11 @@ def build_timer_message_three(timers: nil)
   webhook_message_id = Setting.find_by_key("webhook_message_id")
 
   if webhook_message_id
-    channel = BOT.channel(TIMER_CHANNEL_ID)
-    channel.delete_message(webhook_message_id)
+    begin
+      channel = BOT.channel(TIMER_CHANNEL_ID)
+      channel.delete_message(webhook_message_id)
+    rescue => ex
+    end
   end
 
   result = client.execute(builder, true)
