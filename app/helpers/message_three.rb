@@ -11,6 +11,7 @@ def build_timer_message_three(timers: nil)
   timers ||= Timer.all
   timers.sort_by {|timer| next_spawn_time_start(timer.name, timer: timer) || Chronic.parse("100 years from now") }.each do |timer|
     window_start = ""
+    vague_window_start = ""
     starts_at = ""
     ends_at = ""
     window_end = ""
@@ -23,6 +24,7 @@ def build_timer_message_three(timers: nil)
       starts_at = next_spawn_time_start(timer.name, timer: timer)
       ends_at = next_spawn_time_end(timer.name, timer: timer)
       window_start = display_time_distance(starts_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")
+      vague_window_start = display_time_distance(starts_at, false, words_connector: " ", last_word_connector: " ", two_words_connector: " ", highest_measures: 2)
 
       if timer.window_end || timer.variance
         window_end = display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")
@@ -90,10 +92,7 @@ def build_timer_message_three(timers: nil)
           value: "Opens in: #{window_start}"
         )
       else
-        future_window << Discordrb::Webhooks::EmbedField.new(
-          name: "#{timer.name}",
-          value: "Opens in: #{window_start}"
-        )
+        future_window << "**#{timer.name}** - #{vague_window_start}"
       end
     rescue => ex
       puts ex
@@ -120,7 +119,7 @@ def build_timer_message_three(timers: nil)
   if SHOW_FUTURE_WINDOW && future_window.size > 0
     builder.add_embed do |embed|
       embed.title = "Future Windows"
-      embed.fields = future_window
+      embed.description = future_window.join("\n")
     end
   end
 
