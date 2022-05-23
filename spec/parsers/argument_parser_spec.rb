@@ -8,6 +8,7 @@ describe ArgumentParser do
     expect(ArgumentParser.parse("bob may 13th")).to  eq(["bob", "may 13th"])
     expect(ArgumentParser.parse("bob, may 13th")).to eq(["bob", "may 13th"])
     expect(ArgumentParser.parse("bob| may 13th")).to eq(["bob", "may 13th"])
+    expect(ArgumentParser.parse("bloodgill marauder")).to eq(["bloodgill marauder", nil])
   end
 
 end
