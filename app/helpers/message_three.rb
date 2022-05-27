@@ -129,7 +129,7 @@ def build_timer_message_three(timers: nil)
     embeds << Proc.new {|embed|
       embed.title = "Future Windows"
       embed.description = future_window.join("\n")
-    end
+    }
   end
 
   if TIMER_MESSAGE_THREE_ORDER == "reverse"
