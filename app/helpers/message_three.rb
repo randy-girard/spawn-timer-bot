@@ -140,9 +140,10 @@ def build_timer_message_three(timers: nil)
     builder.add_embed(&embed)
   end
 
+  webhook_message_id = Setting.find_by_key("webhook_message_id")
+
   # Delete and create
   if false
-    webhook_message_id = Setting.find_by_key("webhook_message_id")
     if webhook_message_id
       begin
         channel = BOT.channel(TIMER_CHANNEL_ID)
