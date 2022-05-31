@@ -18,6 +18,7 @@ gem 'pg'
 gem 'sequel'
 gem 'activesupport'
 gem 'require_all'
+gem 'dates_from_string'
 
 group :development, :test do
   gem 'sqlite3'
