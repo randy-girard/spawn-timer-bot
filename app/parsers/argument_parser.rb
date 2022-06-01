@@ -15,12 +15,13 @@ class ArgumentParser
     dates = dates_from_string.find_date(arguments)
 
     mob, manual_tod = arguments.split(/[\|\,]/)
-    if manual_tod == nil || dates.size > 0
-      matches = arguments.to_s.downcase.match(/(.*?)\s+([0-9]|jan |feb |mar |march |apr |may |jun |jul |aug |sep |oct |nov |dec )(.*?)$/)
 
-      if matches && matches[1] && matches[2]
+    if manual_tod == nil || dates.size > 0
+      matches = arguments.to_s.downcase.match(/(.*?)(\||\s)+([0-9]|jan |feb |mar |march |apr |may |jun |jul |aug |sep |oct |nov |dec )(.*?)$/)
+
+      if matches && matches[1] && matches[3]
         mob = matches[1]
-        manual_tod = [matches[2], matches[3]].compact.join
+        manual_tod = [matches[3], matches[4]].compact.join
       end
     end
 
