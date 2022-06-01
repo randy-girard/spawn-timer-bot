@@ -17,7 +17,7 @@ class ArgumentParser
     mob, manual_tod = arguments.split(/[\|\,]/)
 
     if manual_tod == nil || dates.size > 0
-      matches = arguments.to_s.downcase.match(/(.*?)(\||\s)+([0-9]|jan |feb |mar |march |apr |may |jun |jul |aug |sep |oct |nov |dec )(.*?)$/)
+      matches = arguments.to_s.downcase.match(/(.*?)(\||\s)+([0-9]|jan |january |feb |february |mar |march |apr |april |may |jun |june |jul |july |aug |august |sep |september |oct |october |nov |november |dec |december )(.*?)$/)
 
       if matches && matches[1] && matches[3]
         mob = matches[1]
