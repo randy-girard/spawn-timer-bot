@@ -55,7 +55,13 @@ def build_timer_message_three(timers: nil)
         if ends_at > Time.now
           perc = (((Time.now - starts_at) / (ends_at - starts_at)))
           num = (number_of_blocks * perc).round(0)
-          out = "Remaining window: #{display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")}\n"
+
+          if USE_DISCORD_TIMESTAMPS
+            out = "Window ends <t:#{ends_at.to_time.utc.to_i}:R>\n"
+          else
+            out = "Remaining window: #{display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")}\n"
+          end
+
           number_of_blocks.times do |i|
             if i >= num
               out += "⬜"
@@ -92,12 +98,23 @@ def build_timer_message_three(timers: nil)
         #end
         #line += starts_at.in_time_zone("Eastern Time (US & Canada)").strftime("%m/%d %I:%M:%S %p %Z").ljust(COLUMN_4, ' ')
         #upcoming_message << "`#{line}`"
-        upcoming_window << Discordrb::Webhooks::EmbedField.new(
-          name: "#{timer.name}",
-          value: "Opens in: #{window_start}"
-        )
+        if USE_DISCORD_TIMESTAMPS
+          upcoming_window << Discordrb::Webhooks::EmbedField.new(
+            name: "#{timer.name}",
+            value: "Opens <t:#{starts_at.to_time.utc.to_i}:R>"
+          )
+        else
+          upcoming_window << Discordrb::Webhooks::EmbedField.new(
+            name: "#{timer.name}",
+            value: "Opens in: #{window_start}"
+          )
+        end
       else
-        future_window << "**#{timer.name}** - #{vague_window_start}"
+        if USE_DISCORD_TIMESTAMPS
+          future_window << "**#{timer.name}** - <t:#{starts_at.to_time.utc.to_i}:R>"
+        else
+          future_window << "**#{timer.name}** - #{vague_window_start}"
+        end
       end
     rescue => ex
       puts ex
