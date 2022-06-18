@@ -1,5 +1,7 @@
 BOT.command(:todhistory) do |event, *args|
-  return if event.channel.id != COMMAND_CHANNEL_ID
+  if !(event.channel.id == COMMAND_CHANNEL_ID || event.channel.type == 1)
+    return
+  end
 
   if args.size == 0
     event << "```"
