@@ -21,6 +21,12 @@ def build_show_message(timer)
   event << "Alerted: #{timer.alerted}"
   event << "Alerting Soon: #{timer.alerting_soon}"
   event << "Autotod: #{timer.auto_tod ? "Enabled" : "Disabled"}"
+
+  aliases = Alias.where(timer_id: timer.id).all
+  if aliases.size > 0
+    event << "Aliases: #{aliases.map(&:name).join(", ")}"
+  end
+
   event << "```"
   event.join("\n")
 end

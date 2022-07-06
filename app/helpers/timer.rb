@@ -30,6 +30,17 @@ def find_timer_by_mob(mob, timer: nil)
     timers = Timer.where(Sequel.ilike(:name, "%#{mob.to_s}%")).all
     found_timer = timers.find {|timer| timer.name.to_s.downcase == mob.to_s.downcase }
 
+    # If we can't find a timer by the name, look by aliases
+    if found_timer == nil
+      aliases = Alias.where(Sequel.ilike(:name, "%#{mob.to_s}%")).all
+      found_alias = aliases.find {|alias_record| alias_record.name.to_s.downcase == mob.to_s.downcase }
+
+      if found_alias
+        timers = [Timer.where(id: found_alias.timer_id).first]
+        found_timer = timers[0]
+      end
+    end
+
     return timers, found_timer
   end
 end

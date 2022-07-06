@@ -13,6 +13,7 @@ BOT.command(:help) do |event|
   output << "```"
   output << "!register    - Register a new timer that you want to start tracking."
   output << "!unregister  - Removes a previously registered timer."
+  output << "!alias       - Adds or removes an alias on a timer."
   output << "!show        - Displays configuration about a timer."
   output << "!rename      - Renames an existing timer."
   output << "!tod         - Record a time of death for a registered timer."
