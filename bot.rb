@@ -36,19 +36,26 @@ while true
           next_spawn = next_spawn_time_end(timer.name, timer: timer)
           if in_window(timer.name, timer: timer)
             if timer.window_end || timer.variance
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+                BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is in window for #{display_time_distance(next_spawn)}!")
+              end
             else
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** timer is up!")
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+                BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** timer is up!")
+              end
               can_auto_tod = true
             end
             timer.alerted = true
             save_timer = true
           elsif alerting_soon(timer.name, timer: timer) && !timer.alerting_soon
-
             if timer.window_end || timer.variance
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** will be in window in #{display_time_distance(next_spawn_time_start(timer.name))}!")
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+                BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** will be in window in #{display_time_distance(next_spawn_time_start(timer.name))}!")
+              end
             else
-              BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is up in #{display_time_distance(next_spawn_time_start(timer.name))}!")
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+                BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is up in #{display_time_distance(next_spawn_time_start(timer.name))}!")
+              end
             end
             timer.alerting_soon = true
             save_timer = true
