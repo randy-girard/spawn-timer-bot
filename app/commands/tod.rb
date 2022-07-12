@@ -3,11 +3,12 @@ def command_tod(event, *args)
 
   if args.size == 0
     event << "```"
-    event << "!tod [mob name] (|time of death(#skip count)) "
+    event << "!tod [mob name] (|time of death or minutes ago(#skip count)) "
     event << ""
     event << "Examples:"
     event << ""
     event << "!tod Faydedar"
+    event << "!tod Faydedar -20"
     event << "!tod Faydedar|10 hours ago"
     event << "!tod Faydedar|30 hours ago#2"
     event << "!tod Faydedar 10 hours ago"
