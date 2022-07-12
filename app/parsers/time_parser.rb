@@ -16,6 +16,11 @@ class TimeParser
     manual_tod = str.dup.upcase
     manual_tod.gsub!(".", ":")
 
+    minutes = manual_tod.to_s.match(/^-(\d{,3})$/)
+    if minutes
+      manual_tod = "#{minutes[1].to_i} minutes ago"
+    end
+
     begin
       time = nil
       selected_timezone = nil
