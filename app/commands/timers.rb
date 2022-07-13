@@ -6,15 +6,16 @@ BOT.command(:timers) do |event|
   timers = Timer.all.select {|t| t.name.to_s.length > 0 }.map(&:name).sort
 
   timers_string = if event.channel.type == 1
-                    timer_array = []
+                    char_length = 0
+                    num_timers = 0
                     timers.each do |timer|
-                      if (timer_array.join("\n").length + "#{timer}\n".length) < 2_000
-                        timer_array << timer
-                      else
+                      char_length += timer.length
+                      if char_length > 1950
                         break
                       end
+                      num_timers += 1
                     end
-                    timer_array.join("\n")
+                    timers[0..(num_timers-1)].join("\n")
                   else
                     timers.join(", ").truncate(1950, omission: "...")
                   end
