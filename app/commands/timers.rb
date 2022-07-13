@@ -10,7 +10,7 @@ BOT.command(:timers) do |event|
                     num_timers = 0
                     timers.each do |timer|
                       char_length += timer.length
-                      if char_length > 1950
+                      if char_length > 1900
                         break
                       end
                       num_timers += 1
