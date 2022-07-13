@@ -110,10 +110,14 @@ def build_timer_message_three(timers: nil)
           )
         end
       else
-        if USE_DISCORD_TIMESTAMPS
-          future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- <t:#{starts_at.to_time.utc.to_i}:R>"
+        if CONDENSE_FUTURE_WINDOW
+          future_window << "#{timer.name}"
         else
-          future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- #{vague_window_start}"
+          if USE_DISCORD_TIMESTAMPS
+            future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- <t:#{starts_at.to_time.utc.to_i}:R>"
+          else
+            future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- #{vague_window_start}"
+          end
         end
       end
     rescue => ex
@@ -145,7 +149,11 @@ def build_timer_message_three(timers: nil)
   if SHOW_FUTURE_WINDOW && future_window.size > 0
     embeds << Proc.new {|embed|
       embed.title = "Future Windows"
-      embed.description = future_window.join("\n")
+      if CONDENSE_FUTURE_WINDOW
+        embed.description = future_window.join(", ")
+      else
+        embed.description = future_window.join("\n")
+      end
     }
   end
 
