@@ -111,7 +111,7 @@ def build_timer_message_three(timers: nil)
         end
       else
         if CONDENSE_FUTURE_WINDOW
-          future_window << "#{timer.name}"
+          future_window << "**#{timer.name}** (<t:#{starts_at.to_time.utc.to_i}:R>)"
         else
           if USE_DISCORD_TIMESTAMPS
             future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- <t:#{starts_at.to_time.utc.to_i}:R>"
