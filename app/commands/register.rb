@@ -29,7 +29,7 @@ def command_register(event, *args)
       return
     end
 
-    if window_start && !window_start.match?(/^[0-9]/)
+    if window_start.to_s.length == 0 || (window_start && !window_start.match?(/^[0-9]/))
       event.user.pm "Window Start/Spawn time [#{window_start}] is an invalid format. Please use something like '8 hours' or '6 minutes'."
       event.message.create_reaction("⚠️")
       return
