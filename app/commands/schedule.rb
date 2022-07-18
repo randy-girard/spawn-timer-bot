@@ -23,7 +23,7 @@ BOT.command(:schedule) do |event, *args|
     if timers.size > 0
       output << "**#{day.strftime("%A %-m/%-d")}**"
       timers.sort_by {|t| t[:time] }.each do |timer|
-        output << "#{timer[:timer].name} - #{timer[:time].strftime("%I:%m %p")} EST"
+        output << "#{timer[:timer].name} - #{timer[:time].strftime("%H:%m")} EST"
       end
       output << ""
     end
