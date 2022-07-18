@@ -23,6 +23,7 @@ BOT.command(:help) do |event|
   output << "!skip        - Record a skipped spawn for a registered timer."
   output << "!unskip      - Removes the last skip for a registered timer."
   output << "!timers      - See the list of timers that have been registered."
+  output << "!schedule    - Outputs a human readable schedule for the 7 days."
   output << "!quake       - Resets the TOD for all timers. Warning!!! Know what you are doing. This will also post an QUAKE message to an quake alert channel, if defined"
   output << "!leaderboard - Displays leaderboard of TOD by user"
   output << "```"
