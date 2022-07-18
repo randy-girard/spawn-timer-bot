@@ -20,6 +20,17 @@
       editable: false,
       selectable: false,
       businessHours: true,
+      views: {
+        dayGridMonth: {
+          displayEventEnd: true
+        },
+        dayGridWeek: {
+          displayEventEnd: true
+        },
+        listMonth: {
+          displayEventEnd: true
+        }
+      },
       dayMaxEvents: true, // allow "more" link when too many events
       events: <%= events_json %>
     });
