@@ -23,7 +23,13 @@ def alerting_soon(mob, timer: nil)
     next_spawn = next_spawn_time_start(mob, timer: timer)
 
     if next_spawn
-      Time.now > next_spawn - (1 * 60 * 60)
+      warning_time = (1 * 60 * 60)
+
+      if timer.warn_time.to_s.length > 0
+        warning_time = ChronicDuration.parse(timer.warn_time)
+      end
+
+      Time.now >= next_spawn - warning_time
     else
       false
     end

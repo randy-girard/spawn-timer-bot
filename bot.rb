@@ -49,11 +49,11 @@ while true
             save_timer = true
           elsif alerting_soon(timer.name, timer: timer) && !timer.alerting_soon
             if timer.window_end || timer.variance
-              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0 && timer.warn_time.to_s != "-1"
                 BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** will be in window in #{display_time_distance(next_spawn_time_start(timer.name))}!")
               end
             else
-              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0
+              if TIMER_ALERT_CHANNEL_ID.to_s.length > 0 && timer.warn_time.to_s != "-1"
                 BOT.send_message(TIMER_ALERT_CHANNEL_ID, "#{everyone_alert}**#{timer.name}** is up in #{display_time_distance(next_spawn_time_start(timer.name))}!")
               end
             end

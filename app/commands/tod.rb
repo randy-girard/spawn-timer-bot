@@ -78,8 +78,37 @@ def command_tod(event, *args)
       todrecord.created_at = Time.now
       todrecord.save
 
+      tod_timers = [timer]
+      linked_timers = Timer.where(linked_timer_id: timer.id).all
+      linked_timers.each do |linked_timer|
+        tod_timers << linked_timer
+
+        linked_timer.last_tod = tod.to_f
+        linked_timer.alerted = nil
+        linked_timer.alerting_soon = false
+        linked_timer.save
+
+        linkedtodrecord = Tod.new
+        linkedtodrecord.timer_id = linked_timer.id
+        linkedtodrecord.user_id = event.user.id
+        linkedtodrecord.username = event.user.name
+        linkedtodrecord.display_name = event.user.display_name
+        linkedtodrecord.tod = tod.to_f
+        linkedtodrecord.created_at = Time.now
+        linkedtodrecord.save
+      end
+
+      clear_timers = Timer.where(clear_parent_timer_id: timer.id).all
+      clear_timers.each do |clear_timer|
+        clear_timer.last_tod = nil
+        clear_timer.alerted = nil
+        clear_timer.alerting_soon = false
+        clear_timer.save
+      end
+
       update_timers_channel
-      event.user.pm "Time of death for **#{timer.name}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+
+      event.user.pm "Time of death for **#{tod_timers.map(&:name).join(", ")}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
       event.message.create_reaction("✅")
     end
   else

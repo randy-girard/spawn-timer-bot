@@ -21,6 +21,8 @@ def build_show_message(timer)
   event << "Alerted: #{timer.alerted}"
   event << "Alerting Soon: #{timer.alerting_soon}"
 
+  event << "Warn Time: #{timer.warn_time || '60 minutes'}"
+
   event << "Autotod: #{timer.auto_tod ? "Enabled" : "Disabled"}"
 
   aliases = Alias.where(timer_id: timer.id).all
@@ -29,7 +31,7 @@ def build_show_message(timer)
   end
 
   if timer.linked_timer_id && (linked_timer = Timer.where(id: timer.linked_timer_id).first)
-    event << "Linked Timers: #{linked_timer.name}"
+    event << "Linked to Timer: #{linked_timer.name}"
   end
 
   any_linked_timers = Timer.where(linked_timer_id: timer.id).all

@@ -48,7 +48,11 @@ BOT.command(:leaderboard) do |event, *args|
   num_tods = 0
 
   if false
-    Timer.order(:name).all.each do |timer|
+    Timer.where(Sequel.lit("LENGTH(display_name) > 0"))
+         .order(:name)
+         .limit(20)
+         .all
+         .each do |timer|
       tods = Tod.where(timer_id: timer.id)
                 .group_and_count(:display_name)
 
@@ -84,7 +88,11 @@ BOT.command(:leaderboard) do |event, *args|
       tods = tods.where(Sequel.lit("created_at <= ?", end_at))
     end
 
-    tods = tods.all.sort_by {|tod| tod[:count] }.reverse
+    tods = tods.where(Sequel.lit("LENGTH(display_name) > 0"))
+               .limit(20)
+               .all
+               .sort_by {|tod| tod[:count] }
+               .reverse
 
     if tods.size > 0
       users = Tod.order(Sequel.lit("created_at DESC"))
