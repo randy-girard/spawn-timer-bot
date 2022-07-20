@@ -20,6 +20,7 @@ BOT.command(:help) do |event|
   output << "!todremove      - Remove a time of death for a registered timer."
   output << "!register_link  - Register/unregister a timer to automatically set TOD when another timer TOD is set."
   output << "!register_clear - Register/unregister a timer to be cleared when another timer's tod is registered."
+  output << "!set_warn_time  - Allow to adjust when the warning alert will be sent out for timer, or at all."
   output << "!todhistory     - Show last 10 TODs recorded for a registered timer."
   output << "!autotod        - Enables/Disables automatic tod when a timer expires. Only works on timers with no window."
   output << "!skip           - Record a skipped spawn for a registered timer."
