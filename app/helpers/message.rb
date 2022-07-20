@@ -39,6 +39,11 @@ def build_show_message(timer)
     event << "Linked Timers: #{any_linked_timers.map(&:name).join(", ")}"
   end
 
+  any_clear_timers = Timer.where(clear_parent_timer_id: timer.id).all
+  if any_clear_timers.size > 0
+    event << "Clears Timers: #{any_clear_timers.map(&:name).join(", ")}"
+  end
+
   event << "```"
   event.join("\n")
 end
