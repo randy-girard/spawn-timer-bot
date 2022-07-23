@@ -31,7 +31,10 @@ class Timer < Sequel::Model
     _variance = super
 
     if _variance && skip_count.to_i > 0
-      _variance = _variance * (skip_count.to_i + 1)
+      _variance = ChronicDuration.output(
+        ChronicDuration.parse(_variance) * (skip_count.to_i + 1),
+        format: :short
+      )
     end
 
     _variance
