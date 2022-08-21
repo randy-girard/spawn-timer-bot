@@ -5,7 +5,7 @@ def build_timer_message_three(timers: nil)
   mobs_in_window = []
   upcoming_window = []
   future_window = []
-  number_of_blocks = 16
+  number_of_blocks = 14
 
 
   timers ||= Timer.all
@@ -59,7 +59,7 @@ def build_timer_message_three(timers: nil)
           if USE_DISCORD_TIMESTAMPS
             out = "Window ends <t:#{ends_at.to_time.utc.to_i}:R>\n"
           else
-            out = "Remaining window: #{display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")}\n"
+            out = "Remaining: #{display_time_distance(ends_at, true, words_connector: " ", last_word_connector: " ", two_words_connector: " ")}\n"
           end
 
           number_of_blocks.times do |i|
