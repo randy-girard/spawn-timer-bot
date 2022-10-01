@@ -22,6 +22,7 @@ BOT.command(:alias) do |event, *args|
 
   mob, alias_value = args.join(" ").split("|")
   mob.strip!
+  alias_value.strip!
   mob.gsub!("`", "'")
 
   timers, found_timer = find_timer_by_mob(mob)
