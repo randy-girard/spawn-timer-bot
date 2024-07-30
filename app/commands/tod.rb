@@ -16,6 +16,8 @@ def command_tod(event, *args)
     event << "!tod Faydedar|last thursday at 9pm"
     event << "!tod Faydedar 2021-04-30 12:00:00pm"
     event << "!tod Faydedar, 2021-04-30 12:00:00pm"
+    event << "!tod Faydedar Fri Jul 26 10:13:01 2024"
+    event << "!tod Faydedar|Fri Jul 26 10:13:01 2024"
     event << "```"
     return
   end
