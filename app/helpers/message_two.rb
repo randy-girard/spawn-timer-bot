@@ -63,12 +63,8 @@ def build_timer_message_two(timers: nil)
     end
 
     begin
-      truncated_timer_name = timer.name.to_s.truncate(COLUMN_1 - 1)
+      truncated_timer_name = timer.name_with_skips.to_s.truncate(COLUMN_1 - 1)
       truncated_timer_name = truncated_timer_name.gsub("`", "'")
-
-      if timer.skip_count.to_i > 0
-        truncated_timer_name = truncated_timer_name + ("*" * timer.skip_count.to_i)
-      end
 
       if !last_tod
         any_need_tod = true

@@ -49,6 +49,7 @@ GEM
     mime-types (3.4.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2022.0105)
+    mini_portile2 (2.8.9)
     minitest (5.15.0)
     mustermann (1.1.1)
       ruby2_keywords (~> 0.0.1)
@@ -90,7 +91,8 @@ GEM
       rack (~> 2.2)
       rack-protection (= 2.2.0)
       tilt (~> 2.0)
-    sqlite3 (1.4.2)
+    sqlite3 (1.5.0)
+      mini_portile2 (~> 2.8.0)
     tilt (2.0.10)
     timecop (0.9.4)
     tzinfo (2.0.4)
@@ -124,7 +126,7 @@ DEPENDENCIES
   rspec
   sequel
   sinatra
-  sqlite3
+  sqlite3 (= 1.5.0)
   timecop
 
 RUBY VERSION

@@ -104,12 +104,8 @@ get "/timers" do
     end
 
     begin
-      truncated_timer_name = timer.name.to_s.truncate(50 - 1)
+      truncated_timer_name = timer.name_with_skips.to_s.truncate(50 - 1)
       truncated_timer_name = truncated_timer_name.gsub("`", "'")
-
-      if timer.skip_count.to_i > 0
-        truncated_timer_name = truncated_timer_name + ("*" * timer.skip_count.to_i)
-      end
 
       if !last_tod
         any_need_tod = true

@@ -22,7 +22,7 @@ gem 'dates_from_string'
 gem 'sinatra'
 
 group :development, :test do
-  gem 'sqlite3'
+  gem 'sqlite3', '1.5.0'
   gem 'rspec'
   gem 'timecop'
   gem 'pry'

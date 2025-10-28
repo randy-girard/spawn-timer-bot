@@ -33,7 +33,9 @@ BOT.command(:set_warn_time) do |event, *args|
     found_timer.warn_time = warn_time
     found_timer.save
 
-    event.user.pm "Alert warn time updated for **#{found_timer.name}**."
+    if SEND_DM_UPDATES
+      event.user.pm "Alert warn time updated for **#{found_timer.name}**."
+    end
     event.message.create_reaction("✅")
   else
     event.user.pm "No timer registered for **#{mob}**."

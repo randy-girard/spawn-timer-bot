@@ -59,7 +59,7 @@ def command_tod(event, *args)
     if timer.has_window? && next_spawn_start_with_tod && next_spawn_end_with_tod && (Time.now < last_spawn || next_spawn_end_with_tod < Time.now)
       event.user.pm "Current time is outside of potential window and would have expired by now. Please try again."
       event.message.create_reaction("⚠️")
-    elsif !timer.has_window? && last_spawn && manual_tod && tod < last_spawn
+    elsif !timer.has_window? && next_spawn_start_with_tod && manual_tod && tod < next_spawn_start_with_tod
       event.user.pm "Time of death is older than potential spawn timer. Please try again."
       event.message.create_reaction("⚠️")
     elsif tod > Time.now
@@ -110,7 +110,9 @@ def command_tod(event, *args)
 
       update_timers_channel
 
-      event.user.pm "Time of death for **#{tod_timers.map(&:name).join(", ")}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+      if SEND_DM_UPDATES
+        event.user.pm "Time of death for **#{tod_timers.map(&:name).join(", ")}** recorded as #{tod.in_time_zone(ENV["TZ"]).strftime("%A, %B %d at %I:%M:%S %p %Z")}!"
+      end
       event.message.create_reaction("✅")
     end
   else

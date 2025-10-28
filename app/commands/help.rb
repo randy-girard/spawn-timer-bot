@@ -23,8 +23,6 @@ BOT.command(:help) do |event|
   output << "!set_warn_time  - Allow to adjust when the warning alert will be sent out for timer, or at all."
   output << "!todhistory     - Show last 10 TODs recorded for a registered timer."
   output << "!autotod        - Enables/Disables automatic tod when a timer expires. Only works on timers with no window."
-  output << "!skip           - Record a skipped spawn for a registered timer."
-  output << "!unskip         - Removes the last skip for a registered timer."
   output << "!timers         - See the list of timers that have been registered."
   output << "!schedule       - Outputs a human readable schedule for the 7 days."
   output << "!leaderboard    - Displays leaderboard of TOD by user"

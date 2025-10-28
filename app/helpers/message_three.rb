@@ -73,7 +73,7 @@ def build_timer_message_three(timers: nil)
 
           mobs_in_window << {
             message: Discordrb::Webhooks::EmbedField.new(
-              name: "#{timer.name} (*#{timer.display_window(format: :long)}*)",
+              name: "#{timer.name_with_skips} (*#{timer.display_window(format: :long)}*)",
               value: out
             ),
             percent: perc
@@ -100,23 +100,23 @@ def build_timer_message_three(timers: nil)
         #upcoming_message << "`#{line}`"
         if USE_DISCORD_TIMESTAMPS
           upcoming_window << Discordrb::Webhooks::EmbedField.new(
-            name: "#{timer.name}"  + (timer.has_window? ? " (*#{timer.display_window(format: :long)}*)" : ""),
+            name: "#{timer.name_with_skips}"  + (timer.has_window? ? " (*#{timer.display_window(format: :long)}*)" : ""),
             value: "Opens <t:#{starts_at.to_time.utc.to_i}:R>"
           )
         else
           upcoming_window << Discordrb::Webhooks::EmbedField.new(
-            name: "#{timer.name}"  + (timer.has_window? ? " (*#{timer.display_window(format: :long)}*)" : ""),
+            name: "#{timer.name_with_skips}"  + (timer.has_window? ? " (*#{timer.display_window(format: :long)}*)" : ""),
             value: "Opens in: #{window_start}"
           )
         end
       else
         if CONDENSE_FUTURE_WINDOW
-          future_window << "**#{timer.name}** (<t:#{starts_at.to_time.utc.to_i}:R>)"
+          future_window << "**#{timer.name_with_skips}** (<t:#{starts_at.to_time.utc.to_i}:R>)"
         else
           if USE_DISCORD_TIMESTAMPS
-            future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- <t:#{starts_at.to_time.utc.to_i}:R>"
+            future_window << "**#{timer.name_with_skips}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- <t:#{starts_at.to_time.utc.to_i}:R>"
           else
-            future_window << "**#{timer.name}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- #{vague_window_start}"
+            future_window << "**#{timer.name_with_skips}** #{(timer.has_window? ? "(*#{timer.display_window(format: :long)})* " : "")}- #{vague_window_start}"
           end
         end
       end

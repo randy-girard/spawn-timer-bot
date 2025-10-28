@@ -114,7 +114,7 @@ def past_possible_spawn_time(mob, timer: nil)
   next_spawn = next_spawn_time_end(mob, timer: timer)
 
   if next_spawn
-    Time.now > next_spawn + (10 * 60)
+    Time.now >= next_spawn
   else
     false
   end

@@ -1,4 +1,13 @@
 class Timer < Sequel::Model
+  def name_with_skips
+    out = ""
+    if skip_count.to_i > 0
+      out += "[#{skip_count}] "
+    end
+
+    out + name
+  end
+
   def has_window?
     window_end.to_s.length > 0 || variance.to_s.length > 0
   end
