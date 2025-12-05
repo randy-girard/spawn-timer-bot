@@ -18,6 +18,7 @@ require_all 'config/initializers'
 require_all 'app/models'
 require_relative 'app/helpers/time'
 require_relative 'app/helpers/timer'
+require 'json'
 
 set :views, Proc.new { File.join(root, "app", "views") }
 
@@ -38,6 +39,24 @@ get "/schedule" do
   erb :"schedule/index", { :locals => { events_json: events.to_json } }
 end
 
+get "/timers.json" do
+  content_type :json
+
+  timers = Timer.all.map {|timer|
+    hash = {
+      title: timer.name_with_skips,
+      start: next_spawn_time_start(timer.name, timer: timer)
+    }
+
+    if timer.window_end || timer.variance
+      hash[:end] = next_spawn_time_end(timer.name, timer: timer)
+    end
+
+    hash
+  }.select {|hash| hash[:start] }
+
+  timers.to_json
+end
 get "/timers" do
   any_in_window = false
   any_need_tod = false
