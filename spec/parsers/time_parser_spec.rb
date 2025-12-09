@@ -24,6 +24,7 @@ describe TimeParser do
       expectation("20 minutes ago",          "2021-05-27 01:37:00 -0400")
       expectation("-20",                     "2021-05-27 01:37:00 -0400")
       expectation("Fri Jul 26 10:13:01 2024","2024-07-26 10:13:01.000000000 -0400")
+      expectation("12/7 11:23:12 PM",        "2021-12-07 23:23:12 -0500")
     end
   end
 
