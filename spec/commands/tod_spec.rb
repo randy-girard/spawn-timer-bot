@@ -71,6 +71,31 @@ describe "TodCommand" do
     command_tod(event, ["window 1:58 am"])
   end
 
+  it "can record dates in the future" do
+    window_timer = Timer.create(name: "window", window_start: "2 days", window_end: "7 days")
+
+    user = double("User")
+    expect(user).to receive(:id) { 1 }
+    expect(user).to receive(:name) { "Username" }
+    expect(user).to receive(:display_name) { "Display Name" }
+    expect(user).to receive(:pm).with("Time of death for **window** recorded as Saturday, May 29 at 01:57:00 AM EDT!")
+
+    channel = double("Channel")
+    expect(channel).to receive(:id) { COMMAND_CHANNEL_ID }
+
+    message = double("Message")
+    expect(message).to receive(:create_reaction).with("✅")
+
+    event = double("Event")
+    expect(event).to receive(:channel) { channel }
+    allow(event).to receive(:user) { user }
+    expect(event).to receive(:message) { message }
+
+    expect(self).to receive(:can_future_tod?) { true }
+
+    command_tod(event, ["window 2 days from now"])
+  end
+
   it "should be out of window" do
     window_timer = Timer.create(name: "window", window_start: "2 days", window_end: "7 days")
 
