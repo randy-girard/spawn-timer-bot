@@ -22,7 +22,7 @@ describe "SkipCommand" do
 
     Timecop.travel(Time.local(2021, 5, 27, 20, 57, 0))
 
-    timer_loop(window_timer)
+    timer_loop(window_timer, Time.now)
 
     expect(Timer.last.display_window).to eq("4h")
 
@@ -50,7 +50,7 @@ describe "SkipCommand" do
 
     Timecop.travel(Time.local(2021, 5, 27, 20, 57, 0))
 
-    timer_loop(window_timer)
+    timer_loop(window_timer, Time.now)
 
     expect(Timer.last.display_window).to eq("4h")
 
@@ -77,7 +77,7 @@ describe "SkipCommand" do
 
     Timecop.travel(Time.local(2021, 5, 28, 15, 57, 0))
 
-    timer_loop(window_timer)
+    timer_loop(window_timer, Time.now)
 
     expect(Timer.last.display_window).to eq("6h")
 
@@ -104,7 +104,7 @@ describe "SkipCommand" do
 
     Timecop.travel(Time.local(2021, 5, 28, 15, 57, 0))
 
-    timer_loop(window_timer)
+    timer_loop(window_timer, Time.now)
 
     expect(Timer.last.display_window).to eq("6h")
 
@@ -131,7 +131,7 @@ describe "SkipCommand" do
 
     Timecop.travel(Time.local(2021, 5, 27, 21, 57, 0))
 
-    timer_loop(window_timer)
+    timer_loop(window_timer, Time.now)
 
     expect(Timer.last.display_window).to eq("8h")
 

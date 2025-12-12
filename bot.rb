@@ -24,7 +24,7 @@ while true
 
     timers ||= Timer.all
     timers.each do |timer|
-      timer_loop(timer)
+      timer_loop(timer, this_run_time)
     end
   rescue => ex
     puts ex.message

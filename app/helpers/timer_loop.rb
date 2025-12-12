@@ -1,4 +1,4 @@
-def timer_loop(timer)
+def timer_loop(timer, this_run_time)
   everyone_alert = USE_EVERYONE_ALERT ? "@everyone " : ""
   can_auto_tod = false
   save_timer = false
@@ -39,6 +39,10 @@ def timer_loop(timer)
     timer.alerted = nil
     timer.alerting_soon = nil
     save_timer = true
+
+    if timer.auto_tod == true
+      can_auto_tod = true
+    end
   end
 
   if save_timer
