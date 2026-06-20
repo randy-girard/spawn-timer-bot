@@ -75,7 +75,7 @@ def command_tod(event, *args)
       todrecord.timer_id = timer.id
       todrecord.user_id = event.user.id
       todrecord.username = event.user.name
-      todrecord.display_name = event.user.display_name
+      todrecord.display_name = user_display_name(event.user)
       todrecord.tod = tod.to_f
       todrecord.created_at = Time.now
       todrecord.save
@@ -94,7 +94,7 @@ def command_tod(event, *args)
         linkedtodrecord.timer_id = linked_timer.id
         linkedtodrecord.user_id = event.user.id
         linkedtodrecord.username = event.user.name
-        linkedtodrecord.display_name = event.user.display_name
+        linkedtodrecord.display_name = user_display_name(event.user)
         linkedtodrecord.tod = tod.to_f
         linkedtodrecord.created_at = Time.now
         linkedtodrecord.save
