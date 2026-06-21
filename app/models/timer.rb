@@ -15,7 +15,7 @@ class Timer < Sequel::Model
   def window_start
     _start = super
 
-    if skip_count.to_i > 0
+    if _start && skip_count.to_i > 0
       s = ChronicDuration.parse(_start)
       s = s * (skip_count.to_i + 1)
       _start = ChronicDuration.output(s, :format => :short)
