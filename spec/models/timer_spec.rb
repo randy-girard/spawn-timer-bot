@@ -20,4 +20,11 @@ describe Timer do
     ).to eq(nil)
   end
 
+  it "does not crash when skip_count is set with an unparseable window_start" do
+    timer = Timer.new(window_start: "0 hours", skip_count: 1)
+
+    expect(timer.window_start).to eq("0 hours")
+    expect { next_spawn_time_start(timer.name, timer: timer) }.not_to raise_error
+  end
+
 end

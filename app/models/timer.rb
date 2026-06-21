@@ -17,8 +17,10 @@ class Timer < Sequel::Model
 
     if _start && skip_count.to_i > 0
       s = ChronicDuration.parse(_start)
-      s = s * (skip_count.to_i + 1)
-      _start = ChronicDuration.output(s, :format => :short)
+      if s
+        s = s * (skip_count.to_i + 1)
+        _start = ChronicDuration.output(s, :format => :short)
+      end
     end
 
     _start
@@ -29,8 +31,10 @@ class Timer < Sequel::Model
 
     if _end && skip_count.to_i > 0
       e = ChronicDuration.parse(_end)
-      e = e * (skip_count.to_i + 1)
-      _end = ChronicDuration.output(e, :format => :short)
+      if e
+        e = e * (skip_count.to_i + 1)
+        _end = ChronicDuration.output(e, :format => :short)
+      end
     end
 
     _end
@@ -40,10 +44,13 @@ class Timer < Sequel::Model
     _variance = super
 
     if _variance && skip_count.to_i > 0
-      _variance = ChronicDuration.output(
-        ChronicDuration.parse(_variance) * (skip_count.to_i + 1),
-        format: :short
-      )
+      parsed = ChronicDuration.parse(_variance)
+      if parsed
+        _variance = ChronicDuration.output(
+          parsed * (skip_count.to_i + 1),
+          format: :short
+        )
+      end
     end
 
     _variance
