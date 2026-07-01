@@ -1,0 +1,239 @@
+openapi: 3.0.3
+info:
+  title: Spawn Timer Bot API
+  description: |
+    API for uploading and retrieving EverQuest character inventory and spellbook files.
+
+    Files use Project 1999 / EverQuest naming conventions (`{CharacterName}-Inventory.txt`,
+    `{CharacterName}-Spellbook.txt`) and are stored in the database. Uploads overwrite the
+    previous data for that character and resource.
+  version: 1.0.0
+
+servers:
+  - url: /
+    description: Current host
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Characters
+    description: Character inventory and spellbook resources
+
+paths:
+  /api/characters/{name}/inventory:
+    parameters:
+      - $ref: "#/components/parameters/CharacterName"
+    get:
+      tags: [Characters]
+      summary: Get character inventory
+      description: Returns the raw inventory file for the character as tab-separated text.
+      operationId: getCharacterInventory
+      responses:
+        "200":
+          description: Inventory file contents
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |
+                Location	Name	ID	Count	Slots
+                Charm	Empty	0	0	0
+                Head	Runed Cowl	10141	1	5
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+    post:
+      tags: [Characters]
+      summary: Upload character inventory
+      description: |
+        Uploads or overwrites the inventory file for the character.
+
+        Accepts either:
+        - Raw file content in the request body (`text/plain`)
+        - A file upload via `multipart/form-data` using a `file` field
+      operationId: uploadCharacterInventory
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: |
+              Location	Name	ID	Count	Slots
+              Charm	Empty	0	0	0
+              Head	Runed Cowl	10141	1	5
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Inventory file to upload
+      responses:
+        "200":
+          description: Upload succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+
+  /api/characters/{name}/spellbook:
+    parameters:
+      - $ref: "#/components/parameters/CharacterName"
+    get:
+      tags: [Characters]
+      summary: Get character spellbook
+      description: Returns the raw spellbook file for the character as tab-separated text.
+      operationId: getCharacterSpellbook
+      responses:
+        "200":
+          description: Spellbook file contents
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: |
+                20	Elemental Shield
+                4	Gate
+                24	Major Shielding
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+    post:
+      tags: [Characters]
+      summary: Upload character spellbook
+      description: |
+        Uploads or overwrites the spellbook file for the character.
+
+        Accepts either:
+        - Raw file content in the request body (`text/plain`)
+        - A file upload via `multipart/form-data` using a `file` field
+      operationId: uploadCharacterSpellbook
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+            example: |
+              20	Elemental Shield
+              4	Gate
+              24	Major Shielding
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Spellbook file to upload
+      responses:
+        "200":
+          description: Upload succeeded
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: |
+        API key configured via the `CHARACTER_API_KEY` environment variable.
+        May also be passed as the `api_key` query parameter.
+
+  parameters:
+    CharacterName:
+      name: name
+      in: path
+      required: true
+      description: EverQuest character name (letters, numbers, underscores, hyphens).
+      schema:
+        type: string
+        pattern: "^[A-Za-z][A-Za-z0-9_-]*$"
+      example: Aftershock
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: string
+      example:
+        error: Invalid or missing API key
+
+    UploadResponse:
+      type: object
+      required: [character, resource, filename, updated_at]
+      properties:
+        character:
+          type: string
+          example: Aftershock
+        resource:
+          type: string
+          enum: [inventory, spellbook]
+          example: inventory
+        filename:
+          type: string
+          description: Conventional EverQuest filename for the resource.
+          example: Aftershock-Inventory.txt
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-07-01T13:21:45-04:00"
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Unauthorized:
+      description: Missing or invalid API key
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Character or file not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotConfigured:
+      description: CHARACTER_API_KEY is not configured
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"

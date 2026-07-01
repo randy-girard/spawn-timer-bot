@@ -18,6 +18,8 @@ require_all 'config/initializers'
 require_all 'app/models'
 require_relative 'app/helpers/time'
 require_relative 'app/helpers/timer'
+require_relative 'routes/character_resources'
+require_relative 'routes/swagger'
 require 'json'
 
 set :views, Proc.new { File.join(root, "app", "views") }
