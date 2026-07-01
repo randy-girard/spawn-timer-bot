@@ -51,4 +51,25 @@ class Character < Sequel::Model
       updated_at: public_send("#{resource}_updated_at").iso8601
     }
   end
+
+  def resource_index_entry(resource)
+    {
+      character: name,
+      filename: self.class.filename_for(name, resource),
+      updated_at: public_send("#{resource}_updated_at")&.iso8601,
+      data: resource_data(resource)
+    }
+  end
+
+  def self.with_resource(resource)
+    data_column = :"#{resource}_data"
+
+    where(Sequel.~(data_column => nil))
+      .exclude(data_column => "")
+      .order(:name)
+  end
+
+  def self.list_resources(resource)
+    with_resource(resource).map { |character| character.resource_index_entry(resource) }
+  end
 end

@@ -51,11 +51,26 @@ helpers do
 
     character.resource_data(resource)
   end
+
+  def list_character_resources(resource)
+    {
+      resource: resource,
+      characters: Character.list_resources(resource)
+    }
+  end
 end
 
 before "/api/characters/*" do
   content_type :json
   require_character_api_key!
+end
+
+get "/api/characters/inventory" do
+  list_character_resources("inventory").to_json
+end
+
+get "/api/characters/spellbook" do
+  list_character_resources("spellbook").to_json
 end
 
 get "/api/characters/:name/inventory" do

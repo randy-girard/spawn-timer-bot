@@ -21,6 +21,42 @@ tags:
     description: Character inventory and spellbook resources
 
 paths:
+  /api/characters/inventory:
+    get:
+      tags: [Characters]
+      summary: List all character inventories
+      description: Returns every character that has inventory data stored, including the full file contents.
+      operationId: listCharacterInventories
+      responses:
+        "200":
+          description: All character inventories
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceIndexResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+
+  /api/characters/spellbook:
+    get:
+      tags: [Characters]
+      summary: List all character spellbooks
+      description: Returns every character that has spellbook data stored, including the full file contents.
+      operationId: listCharacterSpellbooks
+      responses:
+        "200":
+          description: All character spellbooks
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResourceIndexResponse"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+
   /api/characters/{name}/inventory:
     parameters:
       - $ref: "#/components/parameters/CharacterName"
@@ -211,6 +247,40 @@ components:
           type: string
           format: date-time
           example: "2026-07-01T13:21:45-04:00"
+
+    ResourceIndexEntry:
+      type: object
+      required: [character, filename, updated_at, data]
+      properties:
+        character:
+          type: string
+          example: Aftershock
+        filename:
+          type: string
+          example: Aftershock-Inventory.txt
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-07-01T13:21:45-04:00"
+        data:
+          type: string
+          description: Raw tab-separated file contents.
+          example: |
+            Location	Name	ID	Count	Slots
+            Charm	Empty	0	0	0
+
+    ResourceIndexResponse:
+      type: object
+      required: [resource, characters]
+      properties:
+        resource:
+          type: string
+          enum: [inventory, spellbook]
+          example: inventory
+        characters:
+          type: array
+          items:
+            $ref: "#/components/schemas/ResourceIndexEntry"
 
   responses:
     BadRequest:
