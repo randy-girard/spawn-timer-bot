@@ -2,12 +2,14 @@ openapi: 3.0.3
 info:
   title: Spawn Timer Bot API
   description: |
-    API for uploading and retrieving EverQuest character inventory and spellbook files.
+    API for spawn timer character resources and DKP item lookups.
 
-    Files use Project 1999 / EverQuest naming conventions (`{CharacterName}-Inventory.txt`,
-    `{CharacterName}-Spellbook.txt`) and are stored in the database. Uploads overwrite the
-    previous data for that character and resource.
-  version: 1.0.0
+    Character endpoints upload/retrieve EverQuest inventory and spellbook files
+    (`{CharacterName}-Inventory.txt`, `{CharacterName}-Spellbook.txt`).
+
+    DKP endpoints search items in the alfred bot database and return DKP amounts
+    spent on each match.
+  version: 1.1.0
 
 servers:
   - url: /
@@ -19,8 +21,56 @@ security:
 tags:
   - name: Characters
     description: Character inventory and spellbook resources
+  - name: DKP Items
+    description: Search EverQuest items and DKP amounts spent on them
 
 paths:
+  /api/dkp/items:
+    get:
+      tags: [DKP Items]
+      summary: Look up an item and its DKP awards
+      description: |
+        Requires an exact item name match (case-insensitive). Backticks (`) and
+        apostrophes (') are treated as interchangeable.
+
+        If the query is not an exact unique match and similar item names are found,
+        returns HTTP 409 with those variations so the client can refine the query.
+      operationId: searchDkpItems
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Exact item name
+          schema:
+            type: string
+            minLength: 1
+          example: Belt of the Destroyer
+      responses:
+        "200":
+          description: Exact item match with DKP award history
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DkpItemSearchResponse"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: No item found for the query
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DkpItemLookupError"
+        "409":
+          description: Query was not an exact unique match; suggested variations listed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DkpItemLookupError"
+        "503":
+          $ref: "#/components/responses/NotConfigured"
+
   /api/characters/inventory:
     get:
       tags: [Characters]
@@ -281,6 +331,128 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/ResourceIndexEntry"
+
+    DkpItemSearchResponse:
+      type: object
+      required: [query, item]
+      properties:
+        query:
+          type: string
+          example: Belt of the Destroyer
+        item:
+          $ref: "#/components/schemas/DkpItemResult"
+
+    DkpItemLookupError:
+      type: object
+      required: [error, query, matches]
+      properties:
+        error:
+          type: string
+          example: No exact unique item match; refine your query. Found 3 variation(s).
+        query:
+          type: string
+          example: Belt of
+        matches:
+          type: array
+          items:
+            type: string
+          example:
+            - Belt of Fire
+            - Belt of the Destroyer
+            - Belt of Tranquility
+
+    DkpItemResult:
+      type: object
+      required: [id, name, summary, awards]
+      properties:
+        id:
+          type: integer
+          example: 6692
+        name:
+          type: string
+          example: Belt of the Destroyer
+        summary:
+          $ref: "#/components/schemas/DkpItemSummary"
+        awards:
+          type: array
+          items:
+            $ref: "#/components/schemas/DkpItemAward"
+
+    DkpItemSummary:
+      type: object
+      required: [times_awarded, total_dkp]
+      properties:
+        times_awarded:
+          type: integer
+          example: 27
+        total_dkp:
+          type: integer
+          example: 16093
+        average_dkp:
+          type: number
+          nullable: true
+          example: 596.04
+        min_dkp:
+          type: integer
+          nullable: true
+          example: 1
+        max_dkp:
+          type: integer
+          nullable: true
+          example: 1470
+
+    DkpItemAward:
+      type: object
+      required: [id, dkp]
+      properties:
+        id:
+          type: integer
+        dkp:
+          type: integer
+          example: 1470
+        awarded_at:
+          type: string
+          format: date-time
+          nullable: true
+        character:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/DkpCharacterRef"
+        event:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/DkpEventRef"
+
+    DkpCharacterRef:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: Bulki
+        class:
+          type: string
+          nullable: true
+          example: Myrmidon
+
+    DkpEventRef:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+          example: Dagarn the Destroyer
+        target:
+          nullable: true
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+              example: Dagarn the Destroyer
 
   responses:
     BadRequest:
