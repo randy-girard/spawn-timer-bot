@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: spawn-timer-bot-postgres
+    environment:
+      POSTGRES_USER: spawn_timer
+      POSTGRES_PASSWORD: spawn_timer
+      POSTGRES_DB: spawn_timer_bot_development
+    ports:
+      - "54347:5432"
+    volumes:
+      - spawn_timer_bot_pgdata:/var/lib/postgresql
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U spawn_timer -d spawn_timer_bot_development"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  spawn_timer_bot_pgdata:
